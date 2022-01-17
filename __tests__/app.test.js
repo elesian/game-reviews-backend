@@ -11,10 +11,20 @@ require('jest-sorted');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+// Would prefer to test this for each stage of the seeding creation -
+// however, the output of the seeded tables will suffice
+
 describe('Name of the group', () => {
-  test('it works', () => {
-    return seed(testData).then(({ command }) =>
-      expect(command).toEqual('DROP')
-    );
+  test('Categories, reviews, users, comments tables exists', () => {
+    return seed(testData).then(({ rows }) => {
+      expect(
+        rows.every((element) => {
+          return ['categories', 'reviews', 'users', 'comments'].includes(
+            element.tablename
+          );
+        })
+      ).toEqual(true);
+      expect(rows.length).toEqual(4);
+    });
   });
 });

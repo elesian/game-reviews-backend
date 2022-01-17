@@ -1,0 +1,10 @@
+You are now connected to database "nc_games_test" as user "mfbx4jpb".
+                                        List of relations
+ Schema |    Name    | Type  |  Owner   | Persistence | Access method |    Size    | Description 
+--------+------------+-------+----------+-------------+---------------+------------+-------------
+ public | categories | table | mfbx4jpb | permanent   | heap          | 8192 bytes | 
+ public | comments   | table | mfbx4jpb | permanent   | heap          | 8192 bytes | 
+ public | reviews    | table | mfbx4jpb | permanent   | heap          | 8192 bytes | 
+ public | users      | table | mfbx4jpb | permanent   | heap          | 8192 bytes | 
+(4 rows)
+
