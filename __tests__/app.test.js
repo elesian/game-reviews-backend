@@ -15,7 +15,7 @@ afterAll(() => db.end());
 // however, the output of the seeded tables will suffice
 
 describe('Seeding database', () => {
-  test('Categories, reviews, users, comments tables created', () => {
+  test('TABLES categories, reviews, users, comments EXIST in nc_games_test DB', () => {
     return seed(testData).then(({ rows }) => {
       expect(
         rows.every((element) => {
@@ -25,6 +25,7 @@ describe('Seeding database', () => {
         })
       ).toEqual(true);
       expect(rows.length).toEqual(4);
+      expect(process.env.PGDATABASE).toEqual('nc_games_test');
     });
   });
 });
