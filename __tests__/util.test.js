@@ -1,5 +1,5 @@
-const { } = require('../utils/utils.js');
+/** @format */
 
-describe('Name of the group', () => {
-    
-});
+const { queryParser } = require('../utils/index.js');
+
+describe('Name of the group', () => {});

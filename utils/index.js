@@ -1,0 +1,1 @@
+exports.queryParser = require('./queryParser.js');
