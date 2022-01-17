@@ -1,11 +1,6 @@
 /** @format */
 const db = require('../db/connection.js');
-const {
-  categoryData,
-  commentData,
-  reviewData,
-  userData,
-} = require('../db/data/test-data/index.js');
+const testData = require('../db/data/test-data/index.js');
 const seed = require('../db/seeds/seed.js');
 
 const request = require('supertest');
@@ -16,4 +11,10 @@ require('jest-sorted');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe('Name of the group', () => {});
+describe('Name of the group', () => {
+  test('it works', () => {
+    return seed(testData).then(({ command }) =>
+      expect(command).toEqual('DROP')
+    );
+  });
+});
