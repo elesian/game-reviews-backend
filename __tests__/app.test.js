@@ -11,11 +11,11 @@ require('jest-sorted');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-// Would prefer to test this for each stage of the seeding creation -
+// Would prefer to test this for each stage of the seeding creation
 // however, the output of the seeded tables will suffice
 
-describe('Name of the group', () => {
-  test('Categories, reviews, users, comments tables exists', () => {
+describe('Seeding database', () => {
+  test('Categories, reviews, users, comments tables created', () => {
     return seed(testData).then(({ rows }) => {
       expect(
         rows.every((element) => {
