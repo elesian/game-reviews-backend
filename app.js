@@ -8,5 +8,6 @@ const { getAPIs, getCategories, getReview } = require('./controllers/getControll
 
 app.get('/api', getAPIs);
 app.get('/api/categories', getCategories);
+app.get('/api/reviews/:review_id', getReview)
 
 module.exports = app;

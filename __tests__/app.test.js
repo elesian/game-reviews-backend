@@ -78,10 +78,39 @@ describe('GET', () => {
         });
     });
   });
-  describe('/api/reviews/:review_id', () => {
-    test('should return a review object ', () => {
-
+  describe.only('/api/reviews/:review_id', () => {
+    test('should return a review object with an aggregated comment total of 0 for a review with no comments', () => {
+      return request(app)
+        .get('/api/reviews/1')
+        .expect(200)
+        .then(({ body: { review } }) => {
+          console.log(review);
+          expect(typeof review).toEqual('object');
+          expect(review.length).toEqual(1);
+          review.every((element) =>
+            expect(element).toEqual({
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              review_body: expect.any(String),
+              designer: expect.any(String),
+              review_img_url: expect.any(String),
+              category: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: 0,
+            })
+          );
+        });
+    });
+    test.only('should return a review object with an aggregated comment total of > 0 for a review with comments', () => {
+      return request(app)
+        .get('/api/reviews/3')
+        .expect(200)
+        .then(({ body: { review } }) => {
+          console.log(review);
+          expect(review.length).toEqual(1);
+          expect(review[0].comment_count).toEqual(3);
+        });
     });
   });
-
 });

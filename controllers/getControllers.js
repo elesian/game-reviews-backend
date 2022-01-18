@@ -74,7 +74,9 @@ exports.getCategories = (request, response) => {
 };
 
 exports.getReview = (request, response) => {
-
-
-    
-}
+  return fetchReview(request.params)
+    .then(({ rows }) => {
+      return response.status(200).send({ review: rows });
+    })
+    .catch((err) => console.log(err));
+};
