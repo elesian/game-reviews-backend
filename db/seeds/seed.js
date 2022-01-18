@@ -1,6 +1,8 @@
 /** @format */
 
 const db = require('../connection.js');
+const format = require('pg-format');
+const { seedData } = require('../../utils/index.js');
 
 const seed = (data) => {
   const { categoryData, commentData, reviewData, userData } = data;
@@ -53,8 +55,59 @@ const seed = (data) => {
     })
     .then(() => {
       //INSERT DATA INTO CATEGORIES
-
-
+      let getCategoryValues = seedData.insertCategoryData(categoryData);
+      const insertCategoryValues = format(
+        `INSERT INTO categories
+        (slug, description)
+        VALUES
+        %L
+        RETURNING *;
+        `,
+        getCategoryValues
+      );
+      return db.query(insertCategoryValues);
+    })
+    .then(() => {
+      //INSERT DATA INTO USERS
+      let getUserValues = seedData.insertUserData(userData);
+      const insertUserValues = format(
+        `INSERT INTO users
+        (username, avatar_url, name)
+        VALUES
+        %L
+        RETURNING *;
+        `,
+        getUserValues
+      );
+      return db.query(insertUserValues);
+    })
+    .then(() => {
+      //INSERT DATA INTO REVIEWS
+      let getReviewValues = seedData.insertReviewData(reviewData);
+      const insertReviewValues = format(
+        `INSERT INTO reviews
+        (review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at)
+        VALUES
+        %L
+        RETURNING *;
+        `,
+        getReviewValues
+      );
+      return db.query(insertReviewValues);
+    })
+    .then(() => {
+      //INSERT DATA INTO COMMENTS
+      let getCommentValues = seedData.insertCommentData(commentData);
+      const insertCommentValues = format(
+        `INSERT INTO comments
+        (comment_id, author, review_id, votes, created_at, body)
+        VALUES
+        %L
+        RETURNING *;
+        `,
+        getCommentValues
+      );
+      return db.query(insertCommentValues);
     })
     .catch((err) => console.log(err));
 };

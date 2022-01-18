@@ -4,6 +4,8 @@ exports.insertCategoryData = (categoryData) => {
   let insertedCategories = categoryData.map((element) => {
     return [element.slug, element.description];
   });
+  //   console.log(insertedCategories);
+
   return insertedCategories;
 };
 
@@ -11,6 +13,7 @@ exports.insertUserData = (userData) => {
   let insertedUsers = userData.map((element) => {
     return [element.username, element.avatar_url, element.name];
   });
+  //   console.log(insertedUsers);
   return insertedUsers;
 };
 
@@ -30,6 +33,7 @@ exports.insertReviewData = (reviewData) => {
       element.created_at,
     ];
   });
+  //   console.log(insertedReviews);
   return insertedReviews;
 };
 
@@ -46,5 +50,6 @@ exports.insertCommentData = (commentData) => {
       element.body,
     ];
   });
+  //   console.log(insertedComments);
   return insertedComments;
 };
