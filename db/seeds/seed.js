@@ -40,6 +40,7 @@ const seed = (data) => {
         );`);
     })
     .then(() => {
+      //CREATE COMMENTS TABLE
       return db.query(`
           CREATE TABLE comments (
             comment_id SERIAL PRIMARY KEY,
@@ -51,15 +52,24 @@ const seed = (data) => {
           );`);
     })
     .then(() => {
-      return db.query(`SELECT *
-      FROM pg_catalog.pg_tables
-      WHERE schemaname != 'pg_catalog' AND 
-      schemaname != 'information_schema';
-      `);
+      //INSERT DATA INTO CATEGORIES
+
+
     })
     .catch((err) => console.log(err));
 };
 
+const listOfTables = () => {
+  return db
+    .query(
+      `SELECT *
+  FROM pg_catalog.pg_tables
+  WHERE schemaname != 'pg_catalog' AND 
+  schemaname != 'information_schema';
+  `
+    )
+    .then((values) => values)
+    .catch((err) => err);
+};
 
-
-module.exports = seed;
+module.exports = { seed, listOfTables };

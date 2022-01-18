@@ -1,7 +1,7 @@
 /** @format */
 const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
-const seed = require('../db/seeds/seed.js');
+const { seed, listOfTables } = require('../db/seeds/seed.js');
 
 const request = require('supertest');
 const app = require('../app.js');
@@ -16,16 +16,20 @@ afterAll(() => db.end());
 
 describe('Seeding database', () => {
   test('TABLES categories, reviews, users, comments EXIST in nc_games_test DB', () => {
-    return seed(testData).then(({ rows }) => {
-      expect(
-        rows.every((element) => {
-          return ['categories', 'reviews', 'users', 'comments'].includes(
-            element.tablename
-          );
-        })
-      ).toEqual(true);
-      expect(rows.length).toEqual(4);
-      expect(process.env.PGDATABASE).toEqual('nc_games_test');
-    });
+    return seed(testData)
+      .then(() => {
+        return listOfTables();
+      })
+      .then(({ rows }) => {
+        expect(
+          rows.every((element) => {
+            return ['categories', 'reviews', 'users', 'comments'].includes(
+              element.tablename
+            );
+          })
+        ).toEqual(true);
+        expect(rows.length).toEqual(4);
+        expect(process.env.PGDATABASE).toEqual('nc_games_test');
+      });
   });
 });
