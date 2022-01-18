@@ -78,7 +78,7 @@ describe('GET', () => {
         });
     });
   });
-  describe.only('/api/reviews/:review_id', () => {
+  describe('/api/reviews/:review_id', () => {
     test('should return a review object with an aggregated comment total of 0 for a review with no comments', () => {
       return request(app)
         .get('/api/reviews/1')
@@ -102,7 +102,7 @@ describe('GET', () => {
           );
         });
     });
-    test.only('should return a review object with an aggregated comment total of > 0 for a review with comments', () => {
+    test('should return a review object with an aggregated comment total of > 0 for a review with comments', () => {
       return request(app)
         .get('/api/reviews/3')
         .expect(200)
@@ -110,6 +110,22 @@ describe('GET', () => {
           console.log(review);
           expect(review.length).toEqual(1);
           expect(review[0].comment_count).toEqual(3);
+        });
+    });
+  });
+});
+
+describe.only('PATCH', () => {
+  describe('/api/reviews/:review_id', () => {
+    test('should increment the votes count for a given review_id', () => {
+      return request(app)
+        .patch('/api/reviews/1')
+        .send({ inc_votes: -100 })
+        .expect(200)
+        .then(({ body: { review } }) => {
+          console.log(review);
+          expect(review.length).toEqual(1);
+          expect(review[0].votes).toEqual(-99);
         });
     });
   });
