@@ -18,11 +18,11 @@ exports.insertUserData = (userData) => {
 };
 
 exports.insertReviewData = (reviewData) => {
-  let currentID = 0;
+  let current_id = 0;
   let insertedReviews = reviewData.map((element) => {
-    currentID++;
+    current_id++;
     return [
-      currentID,
+      current_id,
       element.title,
       element.review_body,
       element.designer,
@@ -38,11 +38,11 @@ exports.insertReviewData = (reviewData) => {
 };
 
 exports.insertCommentData = (commentData) => {
-  let currentID = 0;
+  let current_id = 0;
   let insertedComments = commentData.map((element) => {
-    currentID++;
+    current_id++;
     return [
-      currentID,
+      current_id,
       element.author,
       element.review_id,
       element.votes,

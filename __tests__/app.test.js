@@ -5,6 +5,7 @@ const { seed, listOfTables } = require('../db/seeds/seed.js');
 
 const request = require('supertest');
 const app = require('../app.js');
+const { response } = require('express');
 //test that returned queries are sorted by a given field
 require('jest-sorted');
 
@@ -32,4 +33,55 @@ describe('Seeding database', () => {
         expect(process.env.PGDATABASE).toEqual('nc_games_test');
       });
   });
+});
+
+describe('GET', () => {
+  describe('/api returns with a list of endpoints', () => {
+    test('should return an object', () => {
+      return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          expect(typeof body).toEqual('object');
+          expect(body[0].completed).toEqual('Y');
+          expect(body.length).toEqual(11);
+          body.every((element) =>
+            expect(element).toEqual(
+              expect.objectContaining({
+                endpoint: expect.any(String),
+                description: expect.any(String),
+                completed: expect.any(String),
+              })
+            )
+          );
+        });
+    });
+  });
+  describe('/api/categories', () => {
+    test('should return an object containing a list of categories', () => {
+      return request(app)
+        .get('/api/categories')
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          expect(typeof body).toEqual('object');
+          expect(Object.keys(body)[0]).toEqual('categories');
+          body.categories.every((element) =>
+            expect(element).toEqual(
+              expect.objectContaining({
+                slug: expect.any(String),
+                description: expect.any(String),
+              })
+            )
+          );
+        });
+    });
+  });
+  describe('/api/reviews/:review_id', () => {
+    test('should return a review object ', () => {
+
+    });
+  });
+
 });

@@ -1,1 +1,1 @@
-//Collection of util functions for backend data manipulation
+//Checks if query is valid
