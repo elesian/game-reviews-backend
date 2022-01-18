@@ -10,14 +10,14 @@ exports.getAPIs = (request, response) => {
       'Y',
     ],
 
-    ['GET /api/categories', 'responds with an array of category objects', 'N'],
+    ['GET /api/categories', 'responds with an array of category objects', 'Y'],
 
-    ['GET /api/reviews/:review_id', 'responds with a review object', 'N'],
+    ['GET /api/reviews/:review_id', 'responds with a review object', 'Y'],
 
     [
       'PATCH /api/reviews/:review_id',
       'add/substract votes for a given review, responds with updated review',
-      'N',
+      'Y',
     ],
 
     [
