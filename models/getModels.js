@@ -35,3 +35,11 @@ exports.fetchReviews = (query) => {
     return db.query(`${values}`, columns);
   });
 };
+
+exports.fetchReviewComments = ({ review_id }) => {
+  const query = `SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body FROM comments 
+  LEFT JOIN reviews ON comments.review_id = reviews.review_id
+  WHERE reviews.review_id = $1;`;
+
+  return db.query(query, [review_id]);
+};

@@ -142,18 +142,33 @@ describe('GET', () => {
   });
   describe('/api/reviews/:review_id/comments', () => {
     test('should return an object ', () => {
-      
+      return request(app)
+        .get(`/api/reviews/2/comments`)
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(typeof comments).toEqual('object');
+        });
     });
-
-  })
+    test('should have specific properties', () => {
+      return request(app)
+        .get(`/api/reviews/2/comments`)
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          comments.every((element) => {
+            expect(element).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  });
 });
-
-
-
-
-
-
-
 
 describe('PATCH', () => {
   describe('/api/reviews/:review_id', () => {
@@ -166,6 +181,23 @@ describe('PATCH', () => {
           console.log(review);
           expect(review.length).toEqual(1);
           expect(review[0].votes).toEqual(-99);
+        });
+    });
+  });
+});
+
+describe.only('POST', () => {
+  describe('/api/reviews/:review_id/comments', () => {
+    test('should return an updated ', () => {
+      return request(app)
+        .post('/api/reviews/1/comments')
+        .send({
+          username: 'mallionaire',
+          body: `I'd buy that for a dollar !!!`,
+        })
+        .expect(201)
+        .then((body) => {
+          console.log(body);
         });
     });
   });

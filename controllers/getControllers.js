@@ -4,6 +4,7 @@ const {
   fetchCategories,
   fetchReview,
   fetchReviews,
+  fetchReviewComments,
 } = require('../models/getModels.js');
 
 exports.getAPIs = (request, response) => {
@@ -96,4 +97,12 @@ exports.getReviews = (request, response) => {
     .catch((err) => {
       return response.status(404).send(err);
     });
+};
+
+exports.getReviewComments = (request, response) => {
+  return fetchReviewComments(request.params)
+    .then(({ rows }) => {
+      return response.status(200).send({ comments: rows });
+    })
+    .catch((err) => console.log(err));
 };
