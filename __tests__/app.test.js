@@ -188,7 +188,7 @@ describe('PATCH', () => {
 
 describe.only('POST', () => {
   describe('/api/reviews/:review_id/comments', () => {
-    test('should return an updated ', () => {
+    test('should return a posted comment ', () => {
       return request(app)
         .post('/api/reviews/1/comments')
         .send({
@@ -196,8 +196,37 @@ describe.only('POST', () => {
           body: `I'd buy that for a dollar !!!`,
         })
         .expect(201)
-        .then((body) => {
-          console.log(body);
+        .then(({ body: { comment } }) => {
+          console.log(comment);
+          expect(typeof comment).toEqual('object');
+          expect(comment.hasOwnProperty('author'));
+          expect(comment.length).toEqual(1);
+          expect(comment[0].comment_id).toEqual(7);
+        });
+    });
+    test('should be able to do multiple updates', () => {
+      return request(app)
+        .post('/api/reviews/2/comments')
+        .send({
+          username: 'mallionaire',
+          body: `I'd buy that for a two dollars !!!`,
+        })
+        .expect(201)
+        .then(() => {
+          return request(app)
+            .post('/api/reviews/2/comments')
+            .send({
+              username: 'mallionaire',
+              body: `I'd buy that for a two dollars !!!`,
+            })
+            .expect(201);
+        })
+        .then(({ body: { comment } }) => {
+          console.log(comment);
+          expect(typeof comment).toEqual('object');
+          expect(comment.hasOwnProperty('author'));
+          expect(comment.length).toEqual(1);
+          expect(comment[0].comment_id).toEqual(8);
         });
     });
   });
