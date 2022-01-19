@@ -149,7 +149,7 @@ describe.only('QUERY BUILDER', () => {
       })
       .then((string) => {
         let lowerCase = string.toLowerCase();
-        expect(lowerCase.includes('order by reviews.title asc')).toEqual(true);
+        expect(lowerCase.includes('order by reviews.votes asc')).toEqual(true);
         expect(lowerCase.includes('where category=$1')).toEqual(true);
       });
   });
