@@ -36,7 +36,7 @@ describe('Seeding database', () => {
 });
 
 describe('GET', () => {
-  describe('/api returns with a list of endpoints', () => {
+  describe('/api/developmentalStatus returns with a list of endpoints', () => {
     test('should return an object', () => {
       return request(app)
         .get('/api/developmentStatus')
@@ -166,6 +166,14 @@ describe('GET', () => {
             );
           });
         });
+    });
+  });
+  describe('/api', () => {
+    test.only('returns with a JSON object', () => {
+      return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({ body: { api } }) => console.log(JSON.stringify(api)));
     });
   });
 });

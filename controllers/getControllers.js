@@ -1,5 +1,7 @@
 /** @format */
 
+const fs = require('fs').promises;
+
 const {
   fetchCategories,
   fetchReview,
@@ -105,4 +107,12 @@ exports.getReviewComments = (request, response) => {
       return response.status(200).send({ comments: rows });
     })
     .catch((err) => console.log(err));
+};
+
+exports.getAPI = (request, response) => {
+  return fs
+    .readFile(`${__dirname}/../endpoints.json`, 'utf-8')
+    .then((values) => {
+      return response.status(200).send({ api: JSON.parse(values) });
+    });
 };

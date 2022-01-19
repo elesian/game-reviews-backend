@@ -10,6 +10,7 @@ const {
   getReview,
   getReviews,
   getReviewComments,
+  getAPI,
 } = require('./controllers/getControllers.js');
 
 const { patchReviewVote } = require('./controllers/patchControllers.js');
@@ -18,6 +19,7 @@ const { postComment } = require(`./controllers/postControllers.js`);
 
 const { deleteComment } = require('./controllers/deleteControllers');
 
+app.get('/api', getAPI)
 app.get('/api/developmentStatus', getDevStatus);
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getReview);
