@@ -14,3 +14,10 @@ exports.fetchReview = ({ review_id }) => {
 
   return db.query(query, [review_id]);
 };
+
+exports.fetchReviews = (query) = {
+
+
+
+
+}

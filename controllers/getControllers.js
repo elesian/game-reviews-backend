@@ -1,6 +1,6 @@
 /** @format */
 
-const { fetchCategories, fetchReview } = require('../models/getModels.js');
+const { fetchCategories, fetchReview, fetchReviews } = require('../models/getModels.js');
 
 exports.getAPIs = (request, response) => {
   const endPointData = [
@@ -80,3 +80,8 @@ exports.getReview = (request, response) => {
     })
     .catch((err) => console.log(err));
 };
+
+exports.getReviews = (request, response) => {
+
+
+}

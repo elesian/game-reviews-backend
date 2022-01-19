@@ -1,12 +1,13 @@
 /** @format */
 
-const { seedData } = require('../utils/index.js');
+const { seedData, queryBuilder } = require('../utils/index.js');
 const {
   categoryData,
   commentData,
   reviewData,
   userData,
 } = require('../db/data/test-data/index.js');
+const { query } = require('../db/connection.js');
 
 describe('INSERT Data into CATEGORIES TABLE', () => {
   test('should return an array', () => {
@@ -65,7 +66,7 @@ describe('INSERT data into REVIEWS table', () => {
   });
 });
 
-describe.only('INSERT data into comments table', () => {
+describe('INSERT data into comments table', () => {
   test('should return an array', () => {
     let inserted = seedData.insertCommentData(commentData);
     expect(typeof inserted).toEqual('object');
@@ -81,5 +82,14 @@ describe.only('INSERT data into comments table', () => {
   test('should contain three elements in each array', () => {
     let inserted = seedData.insertCommentData(commentData);
     expect(inserted.every((element) => element.length === 6)).toEqual(true);
+  });
+});
+
+describe.only('QUERY BUILDER', () => {
+  test('should return a string', () => {
+    return queryBuilder.queryBuilderReviews().then((string) => {
+      console.log(string);
+      expect(typeof string).toEqual('string');
+    });
   });
 });

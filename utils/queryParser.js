@@ -1,1 +1,0 @@
-//Checks if query is valid
