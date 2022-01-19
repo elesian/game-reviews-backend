@@ -45,13 +45,9 @@ exports.queryBuilderReviews = async (query = {}) => {
       //build multiple WHERE clauses
       for (let i = 0; i < propertyKeyValues.length; i++) {
         if (i == 0) {
-          queryStr += ` WHERE ${propertyKeyValues[i]}='${
-            query[propertyKeyValues[i]]
-          }'`;
+          queryStr += ` WHERE ${propertyKeyValues[i]}=$${i + 1}`;
         } else {
-          queryStr += ` AND ${propertyKeyValues[i]}='${
-            query[propertyKeyValues[i]]
-          }'`;
+          queryStr += ` AND ${propertyKeyValues[i]}=$${i + 1}`;
         }
       }
     }
@@ -77,11 +73,9 @@ exports.queryBuilderReviews = async (query = {}) => {
       if (!['asc', 'desc'].includes(query.order)) {
         return Promise.reject({ status: 400, msg: 'Invalid ORDER query' });
       } else queryStr += ` ${query.order}`;
-    }
+    } else queryStr += ` DESC`;
   } else {
-    return (queryStr += ' ORDER BY reviews.created_at ASC;');
+    queryStr += ' ORDER BY reviews.created_at ASC';
   }
-
-//   console.log(queryStr + ';');
   return (queryStr += ';');
 };

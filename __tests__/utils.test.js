@@ -92,4 +92,65 @@ describe.only('QUERY BUILDER', () => {
       expect(typeof string).toEqual('string');
     });
   });
+  test('should return a valid sql query', () => {
+    return queryBuilder.queryBuilderReviews().then((string) => {
+      expect(string)
+        .toEqual(`SELECT owner, title, reviews.review_id, review_body, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comment_id)::int as comment_count FROM reviews 
+      JOIN users ON reviews.owner=users.username 
+      LEFT JOIN comments ON reviews.review_id=comments.review_id 
+      GROUP BY reviews.review_id
+       ORDER BY reviews.created_at ASC;`);
+    });
+  });
+  test('should reject invalid WHERE clause', () => {
+    return queryBuilder
+      .queryBuilderReviews({ invalid: 'invalid' })
+      .catch(({ msg }) => expect(msg).toEqual('Invalid WHERE query'));
+  });
+  test('should accept a valid WHERE clause (category)', () => {
+    return queryBuilder
+      .queryBuilderReviews({ category: 'test' })
+      .then((string) => {
+        console.log(string);
+        expect(string.includes('WHERE category=$1')).toEqual(true);
+      });
+  });
+  test('should be able to sort by any valid column', () => {
+    return queryBuilder
+      .queryBuilderReviews({ sort_by: 'category' })
+      .then((string) => {
+        console.log(string);
+        expect(string.includes('ORDER BY reviews.category DESC')).toEqual(true);
+      });
+  });
+  test('should 400 on an invalid column', () => {
+    return queryBuilder
+      .queryBuilderReviews({ sort_by: 'invalid' })
+      .catch(({ status }) => {
+        expect(status).toEqual(400);
+      });
+  });
+  test('should accept ordering', () => {
+    return queryBuilder
+      .queryBuilderReviews({ sort_by: 'category', order: 'asc' })
+      .then((string) => {
+        let lowerCase = string.toLowerCase();
+        expect(lowerCase.includes('order by reviews.category asc')).toEqual(
+          true
+        );
+      });
+  });
+  test('should accept complex queries', () => {
+    return queryBuilder
+      .queryBuilderReviews({
+        sort_by: 'title',
+        order: 'asc',
+        category: 'test',
+      })
+      .then((string) => {
+        let lowerCase = string.toLowerCase();
+        expect(lowerCase.includes('order by reviews.title asc')).toEqual(true);
+        expect(lowerCase.includes('where category=$1')).toEqual(true);
+      });
+  });
 });
