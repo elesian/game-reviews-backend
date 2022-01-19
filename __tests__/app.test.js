@@ -113,9 +113,21 @@ describe('GET', () => {
         });
     });
   });
+  describe.only('/ap/reviews', () => {
+    test('should return an array of review objects', () => {
+      let enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
+      return request(app)
+        .get(`/api/reviews${enquiry}`)
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          console.log(reviews);
+          expect(typeof reviews).toEqual('object');
+        });
+    });
+  });
 });
 
-describe.only('PATCH', () => {
+describe('PATCH', () => {
   describe('/api/reviews/:review_id', () => {
     test('should increment the votes count for a given review_id', () => {
       return request(app)

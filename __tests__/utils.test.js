@@ -85,7 +85,7 @@ describe('INSERT data into comments table', () => {
   });
 });
 
-describe.only('QUERY BUILDER', () => {
+describe('QUERY BUILDER', () => {
   test('should return a string', () => {
     return queryBuilder.queryBuilderReviews().then((string) => {
       console.log(string);

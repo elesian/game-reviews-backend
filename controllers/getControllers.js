@@ -1,6 +1,10 @@
 /** @format */
 
-const { fetchCategories, fetchReview, fetchReviews } = require('../models/getModels.js');
+const {
+  fetchCategories,
+  fetchReview,
+  fetchReviews,
+} = require('../models/getModels.js');
 
 exports.getAPIs = (request, response) => {
   const endPointData = [
@@ -82,6 +86,9 @@ exports.getReview = (request, response) => {
 };
 
 exports.getReviews = (request, response) => {
-
-
-}
+  return fetchReviews(request.query)
+    .then(({ rows }) => {
+      return response.status(200).send({ reviews: rows });
+    })
+    .catch((err) => console.log(err));
+};

@@ -7,8 +7,7 @@ exports.queryBuilderReviews = async (query = {}) => {
 
   let queryStr = `SELECT owner, title, reviews.review_id, review_body, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comment_id)::int as comment_count FROM reviews 
       JOIN users ON reviews.owner=users.username 
-      LEFT JOIN comments ON reviews.review_id=comments.review_id 
-      GROUP BY reviews.review_id
+      LEFT JOIN comments ON reviews.review_id=comments.review_id
       `;
 
   if (Object.keys(query).length > 0) {
@@ -52,6 +51,9 @@ exports.queryBuilderReviews = async (query = {}) => {
       }
     }
 
+    //Group by required between WHERE and ORDER
+    queryStr += ' GROUP BY reviews.review_id'
+
     if (query.sort_by) {
       if (
         ![
@@ -75,7 +77,8 @@ exports.queryBuilderReviews = async (query = {}) => {
       } else queryStr += ` ${query.order}`;
     } else queryStr += ` DESC`;
   } else {
-    queryStr += ' ORDER BY reviews.created_at ASC';
+    queryStr += ' GROUP BY reviews.review_id ORDER BY reviews.created_at ASC';
   }
   return (queryStr += ';');
 };
+
