@@ -113,7 +113,7 @@ describe('GET', () => {
         });
     });
   });
-  describe.only('/ap/reviews', () => {
+  describe('/api/reviews', () => {
     test('should return an array of review objects', () => {
       let enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
       return request(app)
@@ -122,10 +122,38 @@ describe('GET', () => {
         .then(({ body: { reviews } }) => {
           console.log(reviews);
           expect(typeof reviews).toEqual('object');
+          expect(reviews.length).toEqual(11);
         });
     });
+    test('should return 404 on invalid category ', () => {
+      let enquiry = `?category=INVALID&sort_by=votes&order=desc`;
+      return request(app)
+        .get(`/api/reviews${enquiry}`)
+        .expect(404)
+        .catch((values) => expect(values).toEqual('404 content not found'));
+    });
+    test('should return 404 on invalid column ', () => {
+      let enquiry = `?INVALID=INVALID&sort_by=votes&order=desc`;
+      return request(app)
+        .get(`/api/reviews${enquiry}`)
+        .expect(404)
+        .catch((values) => expect(values).toEqual('404 content not found'));
+    });
   });
+  describe('/api/reviews/:review_id/comments', () => {
+    test('should return an object ', () => {
+      
+    });
+
+  })
 });
+
+
+
+
+
+
+
 
 describe('PATCH', () => {
   describe('/api/reviews/:review_id', () => {

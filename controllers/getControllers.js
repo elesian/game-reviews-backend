@@ -88,7 +88,12 @@ exports.getReview = (request, response) => {
 exports.getReviews = (request, response) => {
   return fetchReviews(request.query)
     .then(({ rows }) => {
-      return response.status(200).send({ reviews: rows });
+      if (rows.length) {
+        console.log(rows.length);
+        return response.status(200).send({ reviews: rows });
+      } else return Promise.reject('404 content not found');
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return response.status(404).send(err);
+    });
 };

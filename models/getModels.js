@@ -27,8 +27,11 @@ exports.fetchReviews = (query) => {
     }
   });
 
+  console.log(columns);
+
   //sql injection protection
   return queryBuilderReviews(query).then((values) => {
+    console.log(values);
     return db.query(`${values}`, columns);
   });
 };
