@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 const {
-  getAPIs,
+  getDevStatus,
   getCategories,
   getReview,
   getReviews,
@@ -18,7 +18,7 @@ const { postComment } = require(`./controllers/postControllers.js`);
 
 const { deleteComment } = require('./controllers/deleteControllers');
 
-app.get('/api', getAPIs);
+app.get('/api/developmentStatus', getDevStatus);
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getReview);
 app.get('/api/reviews', getReviews);

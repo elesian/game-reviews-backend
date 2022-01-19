@@ -14,21 +14,41 @@
       ]
     }
   },
-  "GET /api/reviews": {
-    "description": "serves an array of all reviews",
-    "queries": ["category", "sort_by", "order"],
+  "GET /api/reviews/:review_id": {
+    "description": "returns a single review object specified by the parametric review_id",
+    "queries": [],
     "exampleResponse": {
       "reviews": [
-        {
-          "title": "One Night Ultimate Werewolf",
-          "designer": "Akihisa Okui",
-          "owner": "happyamy2016",
-          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-          "category": "hidden-roles",
-          "created_at": 1610964101251,
-          "votes": 5
-        }
+        "owner",
+        "title",
+        "review_id",
+        "review_body",
+        "designer",
+        "review_img_url",
+        "category",
+        "created_at",
+        "votes",
+        "comment_count"
       ]
     }
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "an array of comments for the given review_id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": ["comment_id", "votes", "created_at", "author", "body"]
+    }
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "responds with the posted comment for a particular review_id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": ["comment_id", "votes", "created_at", "author", "body"]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the given comment by comment_id",
+    "queries": [],
+    "exampleResponse": "status 204 and no content"
   }
 }

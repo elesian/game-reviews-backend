@@ -39,7 +39,7 @@ describe('GET', () => {
   describe('/api returns with a list of endpoints', () => {
     test('should return an object', () => {
       return request(app)
-        .get('/api')
+        .get('/api/developmentStatus')
         .expect(200)
         .then(({ body }) => {
           console.log(body);

@@ -7,7 +7,7 @@ const {
   fetchReviewComments,
 } = require('../models/getModels.js');
 
-exports.getAPIs = (request, response) => {
+exports.getDevStatus = (request, response) => {
   const endPointData = [
     [
       'GET /api',
