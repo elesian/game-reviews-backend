@@ -186,7 +186,7 @@ describe('PATCH', () => {
   });
 });
 
-describe.only('POST', () => {
+describe('POST', () => {
   describe('/api/reviews/:review_id/comments', () => {
     test('should return a posted comment ', () => {
       return request(app)
@@ -227,6 +227,20 @@ describe.only('POST', () => {
           expect(comment.hasOwnProperty('author'));
           expect(comment.length).toEqual(1);
           expect(comment[0].comment_id).toEqual(8);
+        });
+    });
+  });
+});
+
+describe('DELETE', () => {
+  describe('Delete comment', () => {
+    test('should return a 204 status code with no body', () => {
+      return request(app)
+        .delete('/api/comments/2')
+        .expect(204)
+        .then(({ statusCode, body }) => {
+          expect(statusCode).toEqual(204);
+          expect(body).toEqual({});
         });
     });
   });
