@@ -28,19 +28,19 @@ exports.getAPIs = (request, response) => {
     [
       'GET /api/reviews',
       'responds with a reviews array of review objects',
-      'N',
+      'Y',
     ],
 
     [
       'GET /api/reviews/:review_id/comments',
       'responds with an array of comments for the given review_id',
-      'N',
+      'Y',
     ],
 
     [
       'POST /api/reviews/:review_id/comments',
       'post a comment to a review, responds with the posted comment',
-      'N',
+      'Y',
     ],
 
     [
