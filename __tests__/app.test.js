@@ -36,7 +36,7 @@ describe('Seeding database', () => {
 
 describe('*', () => {
   describe('*/invalid', () => {
-    test.only('should return a 404 error ', () => {
+    test('should return a 404 error ', () => {
       return request(app)
         .get('/invalidURL')
         .expect(404)
@@ -49,9 +49,9 @@ describe('*', () => {
 
 describe('GET', () => {
   describe('/api/developmentalStatus returns with a list of endpoints', () => {
-    test('should return an object', () => {
+    test('should return an array of endpoints with fields', () => {
       return request(app)
-        .get('/api/developmentStatus')
+        .get('/api/devStatus')
         .expect(200)
         .then(({ body }) => {
           console.log(body);
@@ -67,6 +67,14 @@ describe('GET', () => {
               })
             )
           );
+        });
+    });
+    test('should ignore queries', () => {
+      return request(app)
+        .get('/api/devStatus?test=2')
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Queries not accepted');
         });
     });
   });

@@ -1,6 +1,7 @@
 /** @format */
 
 const fs = require('fs').promises;
+const { hasQuery } = require('../utils/queryBuilder');
 
 const {
   fetchCategories,
@@ -9,7 +10,7 @@ const {
   fetchReviewComments,
 } = require('../models/getModels.js');
 
-exports.getDevStatus = (request, response) => {
+exports.getDevStatus = (request, response, next) => {
   const endPointData = [
     [
       'GET /api',
@@ -69,7 +70,17 @@ exports.getDevStatus = (request, response) => {
     };
   });
 
-  return response.status(200).send(endPoints);
+  return hasQuery(request.query)
+    .then((isQuery) => {
+      if (isQuery === false) {
+        return response.status(200).send(endPoints);
+      } else
+        return Promise.reject({ status: 404, msg: 'Queries not accepted' });
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
 };
 
 exports.getCategories = (request, response) => {

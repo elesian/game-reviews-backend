@@ -1,6 +1,12 @@
 /** @format */
 
 // errors/index.js
+
+exports.handle404Errors = (req, res) => {
+  // console.log(err);
+  return res.status(404).send({ msg: '404 - Not Found' });
+};
+
 exports.handlePsqlErrors = (err, req, res, next) => {
   if (err.code === '22P02') {
     return res.status(400).send({ msg: 'Invalid input' });
@@ -17,8 +23,3 @@ exports.handleServerErrors = (err, req, res, next) => {
   console.log(err);
   return res.status(500).send({ msg: 'Internal Server Error' });
 };
-
-exports.handle404Errors = (req, res) => {
-    // console.log(err);
-    return res.status(404).send({ msg: '404 - Not Found' });
-  };

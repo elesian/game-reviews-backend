@@ -52,7 +52,7 @@ exports.queryBuilderReviews = async (query = {}) => {
     }
 
     //Group by required between WHERE and ORDER
-    queryStr += ' GROUP BY reviews.review_id'
+    queryStr += ' GROUP BY reviews.review_id';
 
     if (query.sort_by) {
       if (
@@ -82,3 +82,10 @@ exports.queryBuilderReviews = async (query = {}) => {
   return (queryStr += ';');
 };
 
+//checks if query param exists
+
+exports.hasQuery = async (query) => {
+  if (Object.keys(query).length !== 0) {
+    return true;
+  } else return false;
+};

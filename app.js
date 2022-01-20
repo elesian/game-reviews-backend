@@ -26,10 +26,8 @@ const { postComment } = require(`./controllers/postControllers.js`);
 
 const { deleteComment } = require('./controllers/deleteControllers');
 
-app.all('*', handle404Errors);
-
 app.get('/api', getAPI);
-app.get('/api/developmentStatus', getDevStatus);
+app.get('/api/devStatus', getDevStatus);
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getReview);
 app.get('/api/reviews', getReviews);
@@ -41,9 +39,10 @@ app.post('/api/reviews/:review_id/comments', postComment);
 
 app.delete('/api/comments/:comment_id', deleteComment);
 
-app.use(handlePsqlErrors);
-app.use(handleServerErrors);
-app.use(handleCustomErrors);
+app.all('*', handle404Errors);
 app.use(handle404Errors);
+app.use(handlePsqlErrors);
+app.use(handleCustomErrors);
+app.use(handleServerErrors);
 
 module.exports = app;
