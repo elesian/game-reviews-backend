@@ -21,7 +21,7 @@ const seed = (data) => {
       //CREATE USERS TABLE
       return db.query(`
         CREATE TABLE users (
-          username VARCHAR(255) PRIMARY KEY,
+          username VARCHAR(255) PRIMARY KEY NOT NULL,
           avatar_url TEXT,
           name VARCHAR(255)
         );`);
@@ -31,8 +31,8 @@ const seed = (data) => {
       return db.query(`
         CREATE TABLE reviews (
           review_id SERIAL PRIMARY KEY,
-          title VARCHAR(255),
-          review_body TEXT,
+          title VARCHAR(255) NOT NULL,
+          review_body TEXT NOT NULL,
           designer VARCHAR(255),
           review_img_url TEXT DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
           votes INT DEFAULT 0,
@@ -50,7 +50,7 @@ const seed = (data) => {
             review_id INT REFERENCES reviews(review_id) ON DELETE SET NULL,
             votes INT DEFAULT 0,
             created_at DATE DEFAULT CURRENT_TIMESTAMP,
-            body TEXT
+            body TEXT NOT NULL
           );`);
     })
     .then(() => {
