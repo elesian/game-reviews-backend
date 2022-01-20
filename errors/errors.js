@@ -2,7 +2,7 @@
 
 // errors/index.js
 
-exports.handle404Errors = (err, req, res, next) => {
+exports.handle404Errors = (req, res) => {
   return res.status(404).send({ msg: '404 - Not Found' });
 };
 

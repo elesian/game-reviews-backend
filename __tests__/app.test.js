@@ -140,7 +140,7 @@ describe('GET', () => {
           expect(msg).toEqual('Invalid input');
         });
     });
-    test.only('Should return status 404 for a non-existance ID', () => {
+    test('Should return status 404 for a non-existance ID', () => {
       return request(app)
         .get('/api/reviews/600')
         .expect(404)
@@ -214,7 +214,7 @@ describe('GET', () => {
   });
 });
 
-describe('PATCH', () => {
+describe.only('PATCH', () => {
   describe('/api/reviews/:review_id', () => {
     test('should increment the votes count for a given review_id', () => {
       return request(app)
@@ -222,9 +222,43 @@ describe('PATCH', () => {
         .send({ inc_votes: -100 })
         .expect(200)
         .then(({ body: { review } }) => {
-          console.log(review);
-          expect(review.length).toEqual(1);
-          expect(review[0].votes).toEqual(-99);
+          expect(review.votes).toEqual(-99);
+        });
+    });
+    test('should return 400 on an invalid ID', () => {
+      return request(app)
+        .patch('/api/reviews/test')
+        .send({ inc_votes: -100 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 400 on an invalid inc_votes type', () => {
+      return request(app)
+        .patch('/api/reviews/test')
+        .send({ inc_votes: 'INVALID' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 404 on a non existent ID', () => {
+      return request(app)
+        .patch('/api/reviews/999')
+        .send({ inc_votes: -100 })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - Not Found');
+        });
+    });
+    test('should return status 200 with missing inc_votes key', () => {
+      return request(app)
+        .patch('/api/reviews/1')
+        .send({})
+        .expect(200)
+        .then(({ body: { review } }) => {
+          expect(review.votes).toEqual(1);
         });
     });
   });
