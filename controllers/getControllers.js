@@ -91,12 +91,16 @@ exports.getCategories = (request, response) => {
     .catch((err) => console.log(err));
 };
 
-exports.getReview = (request, response) => {
+exports.getReview = (request, response, next) => {
   return fetchReview(request.params)
     .then(({ rows }) => {
-      return response.status(200).send({ review: rows });
+      if (rows.length !== 0) {
+        return response.status(200).send({ review: rows });
+      } else return Promise.reject({ status: 404, msg: '404 - Not Found' });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getReviews = (request, response) => {

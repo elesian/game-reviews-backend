@@ -38,7 +38,7 @@ describe('*', () => {
   describe('*/invalid', () => {
     test('should return a 404 error ', () => {
       return request(app)
-        .get('/invalidURL')
+        .get('/api/categories&query')
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toEqual('404 - Not Found');
@@ -130,6 +130,22 @@ describe('GET', () => {
           console.log(review);
           expect(review.length).toEqual(1);
           expect(review[0].comment_count).toEqual(3);
+        });
+    });
+    test('Should return status 400 for an invalid ID', () => {
+      return request(app)
+        .get('/api/reviews/INVALID')
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test.only('Should return status 404 for a non-existance ID', () => {
+      return request(app)
+        .get('/api/reviews/600')
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - Not Found');
         });
     });
   });

@@ -11,7 +11,7 @@ exports.queryBuilderReviews = async (query = {}) => {
       `;
 
   if (Object.keys(query).length > 0) {
-    let customKeys = Object.keys(query).filter((element) => {
+    const customKeys = Object.keys(query).filter((element) => {
       //filter out sort_by and order keys of query
       if (!['sort_by', 'order'].includes(element)) {
         return element;
@@ -29,7 +29,7 @@ exports.queryBuilderReviews = async (query = {}) => {
       //reject if not a valid WHERE
       return Promise.reject({ status: 400, msg: 'Invalid WHERE query' });
     } else {
-      let queryKeys = Object.keys(query);
+      const queryKeys = Object.keys(query);
       const propertyKeyValues = [];
       queryKeys.forEach((element) => {
         if (
