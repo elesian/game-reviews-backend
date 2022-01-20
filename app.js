@@ -9,7 +9,7 @@ const {
   handleCustomErrors,
   handlePsqlErrors,
   handleServerErrors,
-} = require('./errors/index.js');
+} = require('./errors/errors.js');
 
 const {
   getDevStatus,
