@@ -1,5 +1,7 @@
 /** @format */
 
+const db = require('../db/connection.js');
+const testData = require('../db/data/test-data/index.js');
 const { seedData, queryBuilder } = require('../utils/index.js');
 const {
   categoryData,
@@ -7,7 +9,10 @@ const {
   reviewData,
   userData,
 } = require('../db/data/test-data/index.js');
-const { query } = require('../db/connection.js');
+const { seed } = require('../db/seeds/seed.js');
+const app = require('../app.js');
+beforeEach(() => seed(testData));
+afterAll(() => db.end());
 
 describe('INSERT Data into CATEGORIES TABLE', () => {
   test('should return an array', () => {
@@ -152,5 +157,29 @@ describe('QUERY BUILDER', () => {
         expect(lowerCase.includes('order by reviews.votes asc')).toEqual(true);
         expect(lowerCase.includes('where category=$1')).toEqual(true);
       });
+  });
+});
+
+describe('Category Validator', () => {
+  test.only('should return an object', () => {
+    return queryBuilder.hasCategory('dexterity').then(({ rows }) => {
+      console.log(rows);
+      expect(typeof rows).toEqual('object');
+      expect(rows.length).toEqual(1);
+    });
+  });
+  test.only('should return zero rows for an invalid category', () => {
+    return queryBuilder.hasCategory('INVALID').then(({ rows }) => {
+      console.log(rows);
+      expect(typeof rows).toEqual('object');
+      expect(rows.length).toEqual(0);
+    });
+  });
+  test.only('should return 1 rows for a valid category', () => {
+    return queryBuilder.hasCategory('social deduction').then(({ rows }) => {
+      console.log(rows);
+      expect(typeof rows).toEqual('object');
+      expect(rows.length).toEqual(1);
+    });
   });
 });

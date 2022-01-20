@@ -2,10 +2,9 @@
 const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const { seed, listOfTables } = require('../db/seeds/seed.js');
-
 const request = require('supertest');
 const app = require('../app.js');
-const { response } = require('express');
+
 //test that returned queries are sorted by a given field
 require('jest-sorted');
 
@@ -149,9 +148,9 @@ describe('GET', () => {
         });
     });
   });
-  describe('/api/reviews', () => {
+  describe.only('/api/reviews', () => {
     test('should return an array of review objects', () => {
-      let enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
+      const enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
       return request(app)
         .get(`/api/reviews${enquiry}`)
         .expect(200)
@@ -159,23 +158,103 @@ describe('GET', () => {
           console.log(reviews);
           expect(typeof reviews).toEqual('object');
           expect(reviews.length).toEqual(11);
+          reviews.every((element) =>
+            expect(isNaN(Date.parse(element.created_at))).toBe(false)
+          );
+          reviews.every((element) =>
+            expect(element).toEqual(
+              expect.objectContaining({
+                owner: expect.any(String),
+                title: expect.any(String),
+                review_id: expect.any(Number),
+                designer: expect.any(String),
+                review_img_url: expect.any(String),
+                category: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            )
+          );
         });
     });
-    test('should return 404 on invalid category ', () => {
-      let enquiry = `?category=INVALID&sort_by=votes&order=desc`;
+    test('should be sorted automatically by date of creation, desc', () => {
       return request(app)
-        .get(`/api/reviews${enquiry}`)
-        .expect(404)
-        .catch((values) => expect(values).toEqual('404 content not found'));
+        .get(`/api/reviews`)
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy('created_at', {
+            descending: true,
+          });
+        });
     });
-    test('should return 404 on invalid column ', () => {
-      let enquiry = `?INVALID=INVALID&sort_by=votes&order=desc`;
+    test('should accept a sort criteria', () => {
+      return request(app)
+        .get(`/api/reviews?sort_by=votes`)
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy('votes', {
+            descending: true,
+          });
+        });
+    });
+    test('should accept a sort and ordering criteria', () => {
+      return request(app)
+        .get(`/api/reviews?sort_by=votes&order=asc`)
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy('votes', {
+            descending: false,
+          });
+        });
+    });
+    test('should accept a category criteria', () => {
+      return request(app)
+        .get(`/api/reviews?category=dexterity`)
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toBeSortedBy('created_by', {
+            descending: false,
+          });
+          expect(reviews.length).toEqual(1);
+        });
+    });
+    test('should return status 400 when sent an invalid sort category ', () => {
+      return request(app)
+        .get(`/api/reviews?sort_by=bananas`)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid SORT query');
+        });
+    });
+    test('should return status 400 when sent an invalid order', () => {
+      return request(app)
+        .get(`/api/reviews?sort_by=owner&order=INVALID`)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid ORDER query');
+        });
+    });
+
+    test('should return 404 on an invalid category ', () => {
+      const enquiry = `?category=INVALID&sort_by=votes&order=desc`;
       return request(app)
         .get(`/api/reviews${enquiry}`)
         .expect(404)
-        .catch((values) => expect(values).toEqual('404 content not found'));
+        .then(({ body: { msg } }) =>
+          expect(msg).toEqual('non-existent category')
+        );
+    });
+    test.only('category valid but has no review, responds with an empty array', () => {
+      return request(app)
+        .get(`/api/reviews?category=children%27s+games`)
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toEqual([]);
+        });
     });
   });
+
   describe('/api/reviews/:review_id/comments', () => {
     test('should return an object ', () => {
       return request(app)
@@ -214,7 +293,7 @@ describe('GET', () => {
   });
 });
 
-describe.only('PATCH', () => {
+describe('PATCH', () => {
   describe('/api/reviews/:review_id', () => {
     test('should increment the votes count for a given review_id', () => {
       return request(app)

@@ -1,7 +1,7 @@
 /** @format */
 
 const fs = require('fs').promises;
-const { hasQuery } = require('../utils/queryBuilder');
+const { hasQuery, hasCategory } = require('../utils/queryBuilder');
 
 const {
   fetchCategories,
@@ -103,20 +103,26 @@ exports.getReview = (request, response, next) => {
     });
 };
 
-exports.getReviews = (request, response) => {
-  return fetchReviews(request.query)
+exports.getReviews = (request, response, next) => {
+  const categoryExists = () => hasCategory(request.query.category);
+
+  return categoryExists()
     .then(({ rows }) => {
-      if (rows.length) {
-        console.log(rows.length);
-        return response.status(200).send({ reviews: rows });
-      } else return Promise.reject('404 content not found');
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: 'non-existent category' });
+      }
+      return fetchReviews(request.query);
+    })
+    .then(({ rows }) => {
+      console.log(rows);
+      return response.status(200).send({ reviews: rows });
     })
     .catch((err) => {
-      return response.status(404).send(err);
+      next(err);
     });
 };
 
-exports.getReviewComments = (request, response) => {
+exports.getReviewComments = (request, response, next) => {
   return fetchReviewComments(request.params)
     .then(({ rows }) => {
       return response.status(200).send({ comments: rows });
@@ -124,7 +130,7 @@ exports.getReviewComments = (request, response) => {
     .catch((err) => console.log(err));
 };
 
-exports.getAPI = (request, response) => {
+exports.getAPI = (request, response, next) => {
   return fs
     .readFile(`${__dirname}/../endpoints.json`, 'utf-8')
     .then((values) => {

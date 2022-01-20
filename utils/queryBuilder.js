@@ -1,11 +1,13 @@
 /** @format */
 
+const db = require('../db/connection.js');
+
 //Checks if query is valid
 
 exports.queryBuilderReviews = async (query = {}) => {
   //takes a list of queries as parameters and uses these to build a complex query
 
-  let queryStr = `SELECT owner, title, reviews.review_id, review_body, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comment_id)::int as comment_count FROM reviews 
+  let queryStr = `SELECT owner, title, reviews.review_id, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comment_id)::int as comment_count FROM reviews 
       JOIN users ON reviews.owner=users.username 
       LEFT JOIN comments ON reviews.review_id=comments.review_id
       `;
@@ -69,16 +71,17 @@ exports.queryBuilderReviews = async (query = {}) => {
       ) {
         return Promise.reject({ status: 400, msg: 'Invalid SORT query' });
       } else queryStr += ` ORDER BY reviews.${query.sort_by}`;
-    }
 
-    if (query.order) {
-      if (!['asc', 'desc'].includes(query.order)) {
-        return Promise.reject({ status: 400, msg: 'Invalid ORDER query' });
-      } else queryStr += ` ${query.order}`;
-    } else queryStr += ` DESC`;
-  } else {
-    queryStr += ' GROUP BY reviews.review_id ORDER BY reviews.created_at ASC';
+      if (query.order) {
+        if (!['asc', 'desc'].includes(query.order)) {
+          return Promise.reject({ status: 400, msg: 'Invalid ORDER query' });
+        } else return (queryStr += ` ${query.order};`);
+      } else return (queryStr += ` DESC;`);
+    } else return (queryStr += ' ORDER BY reviews.created_at DESC;');
   }
+
+  queryStr += ' GROUP BY reviews.review_id ORDER BY reviews.created_at DESC';
+  console.log(queryStr);
   return (queryStr += ';');
 };
 
@@ -88,4 +91,8 @@ exports.hasQuery = async (query) => {
   if (Object.keys(query).length !== 0) {
     return true;
   } else return false;
+};
+
+exports.hasCategory = async (category) => {
+  return db.query(`SELECT * from categories WHERE slug = $1;`, [category]);
 };
