@@ -5,6 +5,13 @@ const app = express();
 app.use(express.json());
 
 const {
+  handle404Errors,
+  handleCustomErrors,
+  handlePsqlErrors,
+  handleServerErrors,
+} = require('./errors/index.js');
+
+const {
   getDevStatus,
   getCategories,
   getReview,
@@ -19,7 +26,7 @@ const { postComment } = require(`./controllers/postControllers.js`);
 
 const { deleteComment } = require('./controllers/deleteControllers');
 
-app.get('/api', getAPI)
+app.get('/api', getAPI);
 app.get('/api/developmentStatus', getDevStatus);
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getReview);
@@ -31,5 +38,10 @@ app.patch('/api/reviews/:review_id', patchReviewVote);
 app.post('/api/reviews/:review_id/comments', postComment);
 
 app.delete('/api/comments/:comment_id', deleteComment);
+
+app.all('*', handle404Errors);
+app.use(handlePsqlErrors);
+app.use(handleCustomErrors);
+app.use(handleServerErrors);
 
 module.exports = app;
