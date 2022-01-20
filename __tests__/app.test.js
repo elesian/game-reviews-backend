@@ -14,7 +14,6 @@ afterAll(() => db.end());
 
 // Would prefer to test this for each stage of the seeding creation
 // however, the output of the seeded tables will suffice
-
 describe('Seeding database', () => {
   test('TABLES categories, reviews, users, comments EXIST in nc_games_test DB', () => {
     return seed(testData)
@@ -32,6 +31,19 @@ describe('Seeding database', () => {
         expect(rows.length).toEqual(4);
         expect(process.env.PGDATABASE).toEqual('nc_games_test');
       });
+  });
+});
+
+describe('*', () => {
+  describe('*/invalid', () => {
+    test.only('should return a 404 error ', () => {
+      return request(app)
+        .get('/invalidURL')
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - Not Found');
+        });
+    });
   });
 });
 
@@ -169,7 +181,7 @@ describe('GET', () => {
     });
   });
   describe('/api', () => {
-    test.only('returns with a JSON object', () => {
+    test('returns with a JSON object', () => {
       return request(app)
         .get('/api')
         .expect(200)
@@ -217,7 +229,7 @@ describe('POST', () => {
         .post('/api/reviews/2/comments')
         .send({
           username: 'mallionaire',
-          body: `I'd buy that for a two dollars !!!`,
+          body: `I'd buy that for a dollar !!!`,
         })
         .expect(201)
         .then(() => {
@@ -225,7 +237,7 @@ describe('POST', () => {
             .post('/api/reviews/2/comments')
             .send({
               username: 'mallionaire',
-              body: `I'd buy that for a two dollars !!!`,
+              body: `I'd buy that for two dollars !!!`,
             })
             .expect(201);
         })
