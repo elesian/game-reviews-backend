@@ -160,26 +160,31 @@ describe('QUERY BUILDER', () => {
   });
 });
 
-describe('Category Validator', () => {
-  test.only('should return an object', () => {
-    return queryBuilder.hasCategory('dexterity').then(({ rows }) => {
-      console.log(rows);
-      expect(typeof rows).toEqual('object');
-      expect(rows.length).toEqual(1);
-    });
+describe.only('Category Validator', () => {
+  test('should return an object', () => {
+    return queryBuilder
+      .hasPropertyValue('categories', 'slug', 'dexterity')
+      .then(({ rows }) => {
+        console.log(rows);
+        expect(typeof rows).toEqual('object');
+      });
   });
-  test.only('should return zero rows for an invalid category', () => {
-    return queryBuilder.hasCategory('INVALID').then(({ rows }) => {
-      console.log(rows);
-      expect(typeof rows).toEqual('object');
-      expect(rows.length).toEqual(0);
-    });
+  test('should return zero rows for an invalid category', () => {
+    return queryBuilder
+      .hasPropertyValue('categories', 'slug', 'INVALID')
+      .then(({ rows }) => {
+        console.log(rows);
+        expect(typeof rows).toEqual('object');
+        expect(rows.length).toEqual(0);
+      });
   });
-  test.only('should return 1 rows for a valid category', () => {
-    return queryBuilder.hasCategory('social deduction').then(({ rows }) => {
-      console.log(rows);
-      expect(typeof rows).toEqual('object');
-      expect(rows.length).toEqual(1);
-    });
+  test('should return 1 rows for a valid category', () => {
+    return queryBuilder
+      .hasPropertyValue('categories', 'slug', 'dexterity')
+      .then(({ rows }) => {
+        console.log(rows);
+        expect(typeof rows).toEqual('object');
+        expect(rows.length).toEqual(1);
+      });
   });
 });

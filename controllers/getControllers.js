@@ -155,6 +155,7 @@ exports.getAPI = (request, response, next) => {
   return fs
     .readFile(`${__dirname}/../endpoints.json`, 'utf-8')
     .then((values) => {
+      console.log(JSON.parse(values));
       return response.status(200).send({ api: JSON.parse(values) });
     });
 };

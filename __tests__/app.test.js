@@ -292,13 +292,17 @@ describe('GET', () => {
       return request(app)
         .get(`/api/reviews/999/comments`)
         .expect(404)
-        .then(({ body: { msg } }) => expect(msg).toEqual('review_ID does not exist'));
+        .then(({ body: { msg } }) =>
+          expect(msg).toEqual('review_ID does not exist')
+        );
     });
     test('Status 200 for valid ID but has no comments. Responds with empty array', () => {
       return request(app)
-      .get(`/api/reviews/1/comments`)
-      .expect(404)
-      .then(({ body: { msg } }) => expect(msg).toEqual('review_ID does not exist'));
+        .get(`/api/reviews/1/comments`)
+        .expect(404)
+        .then(({ body: { msg } }) =>
+          expect(msg).toEqual('review_ID does not exist')
+        );
     });
   });
 
@@ -307,7 +311,12 @@ describe('GET', () => {
       return request(app)
         .get('/api')
         .expect(200)
-        .then(({ body: { api } }) => console.log(JSON.stringify(api)));
+        .then(({ body: { api } }) => {
+          expect(typeof api).toEqual('object');
+          const whatIs = JSON.stringify(api);
+          console.log(typeof whatIS);
+          expect(typeof whatIs).toEqual('string');
+        });
     });
   });
 });
@@ -405,6 +414,99 @@ describe('POST', () => {
           expect(comment[0].comment_id).toEqual(8);
         });
     });
+    test('should return a body that matches the sent body', () => {
+      return request(app)
+        .post('/api/reviews/2/comments')
+        .send({
+          username: 'mallionaire',
+          body: `I'd buy that for a dollar !!!`,
+        })
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment[0].body).toEqual("I'd buy that for a dollar !!!");
+        });
+    });
+    test('should reject an invalid ID', () => {
+      return request(app)
+        .post('/api/reviews/INVALID/comments')
+        .send({
+          username: 'mallionaire',
+          body: `I'd buy that for a dollar !!!`,
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 400 for a non-existant review ID', () => {
+      return request(app)
+        .post('/api/reviews/999/comments')
+        .send({
+          username: 'mallionaire',
+          body: `I'd buy that for a dollar !!!`,
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 404 for missing required fields - i.e no user-name or body properties', () => {
+      return request(app)
+        .post('/api/reviews/1/comments')
+        .send({
+          body: `I'd buy that for a dollar !!!`,
+        })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - user does not exist');
+        });
+    });
+    test('should return 400 for missing required fields - i.e no user-name or body properties', () => {
+      return request(app)
+        .post('/api/reviews/1/comments')
+        .send({
+          username: 'mallionaire',
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 404 for a username that does not exist', () => {
+      return request(app)
+        .post('/api/reviews/1/comments')
+        .send({
+          username: 'INVALID',
+          body: `I'd buy that for a dollar !!!`,
+        })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - user does not exist');
+        });
+    });
+    test('ignores unnecessary properties - STATUS 201 returned', () => {
+      return request(app)
+        .post('/api/reviews/1/comments')
+        .send({
+          username: 'mallionaire',
+          body: `I'd buy that for a dollar !!!`,
+          invalid: 'invalid body',
+        })
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment.length).toEqual(1);
+          expect(comment[0]).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              author: expect.any(String),
+              review_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+        });
+    });
   });
 });
 
@@ -414,9 +516,24 @@ describe('DELETE', () => {
       return request(app)
         .delete('/api/comments/2')
         .expect(204)
-        .then(({ statusCode, body }) => {
+        .then(({ statusCode }) => {
           expect(statusCode).toEqual(204);
-          expect(body).toEqual({});
+        });
+    });
+    test('should return 404 for a non-existent ID', () => {
+      return request(app)
+        .delete('/api/comments/999')
+        .expect(404)
+        .then(({ statusCode }) => {
+          expect(statusCode).toEqual(404);
+        });
+    });
+    test('should return 400 for an invalid ID', () => {
+      return request(app)
+        .delete('/api/comments/INVALID')
+        .expect(400)
+        .then(({ statusCode }) => {
+          expect(statusCode).toEqual(400);
         });
     });
   });

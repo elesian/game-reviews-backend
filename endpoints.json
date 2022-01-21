@@ -20,7 +20,7 @@
   "GET /api/reviews/:review_id": {
     "description": "returns a single review object specified by the parametric review_id",
     "queries": [],
-    "exampleResponse": {
+    "exampleResponseKeys": {
       "reviews": [
         "owner",
         "title",
@@ -55,3 +55,4 @@
     "exampleResponse": "status 204 and no content"
   }
 }
+
