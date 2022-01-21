@@ -36,10 +36,14 @@ exports.fetchReviews = (query) => {
   });
 };
 
-exports.fetchReviewComments = ({ review_id }) => {
+exports.fetchReviewComments = ({ review_id }, { limit=10, p=1 }) => {
+  const currentRow = (p - 1) * limit;
+  console.log(limit, p);
+
   const query = `SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body FROM comments 
   LEFT JOIN reviews ON comments.review_id = reviews.review_id
-  WHERE reviews.review_id = $1;`;
+  WHERE reviews.review_id = $1 ORDER BY reviews.review_id desc
+  LIMIT $2 OFFSET $3;`;
 
-  return db.query(query, [review_id]);
+  return db.query(query, [review_id, limit, currentRow]);
 };

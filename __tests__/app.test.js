@@ -148,7 +148,7 @@ describe('GET', () => {
         });
     });
   });
-  describe.only('/api/reviews', () => {
+  describe('/api/reviews', () => {
     test('should return an array of review objects', () => {
       const enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
       return request(app)
@@ -245,7 +245,7 @@ describe('GET', () => {
           expect(msg).toEqual('non-existent category')
         );
     });
-    test.only('category valid but has no review, responds with an empty array', () => {
+    test('category valid but has no review, responds with an empty array', () => {
       return request(app)
         .get(`/api/reviews?category=children%27s+games`)
         .expect(200)
@@ -256,7 +256,7 @@ describe('GET', () => {
     });
   });
 
-  describe('/api/reviews/:review_id/comments', () => {
+  describe.only('/api/reviews/:review_id/comments', () => {
     test('should return an object ', () => {
       return request(app)
         .get(`/api/reviews/2/comments`)
@@ -301,9 +301,23 @@ describe('GET', () => {
       return request(app)
         .get(`/api/reviews/1/comments`)
         .expect(404)
-        .then(({ body: { msg } }) =>
-          expect(msg).toEqual('review_ID does not exist')
-        );
+        .then(({ body: { msg } }) => expect(msg).toEqual('No comments found'));
+    });
+    test('should accept pagination of results', () => {
+      return request(app)
+        .get(`/api/reviews/3/comments?limit=1&p=2`)
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toEqual(1);
+        });
+    });
+    test('should return 404 not found if pagination is beyond db row count', () => {
+      return request(app)
+        .get(`/api/reviews/3/comments?limit=5&p=2`)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('No comments found');
+        });
     });
   });
 

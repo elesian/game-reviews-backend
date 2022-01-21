@@ -133,15 +133,20 @@ exports.getReviewComments = (request, response, next) => {
 
   return IdExists()
     .then(({ rows }) => {
-      console.log(rows);
-      categoryRows = rows.length;
+      idRows = rows.length;
     })
     .then(() => {
-      return fetchReviewComments(request.params);
+      if (idRows === 0) {
+        return Promise.reject({ status: 404, msg: 'review_ID does not exist' });
+      } else return fetchReviewComments(request.params, request.query);
     })
     .then(({ rows }) => {
-      if (rows.length === 0 && idRows == 0) {
-        return Promise.reject({ status: 404, msg: 'review_ID does not exist' });
+      console.log(rows);
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: 'No comments found',
+        });
       }
       return response.status(200).send({ comments: rows });
     })

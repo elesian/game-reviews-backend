@@ -5,5 +5,6 @@
           LEFT JOIN comments ON reviews.review_id=comments.review_id 
            WHERE reviews.category='social deduction'
            GROUP BY reviews.review_id ORDER BY reviews.review_id desc
+           LIMIT 1;
           
 
