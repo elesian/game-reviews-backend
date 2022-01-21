@@ -1,7 +1,7 @@
 /** @format */
 
 const fs = require('fs').promises;
-const { hasQuery, hasCategory } = require('../utils/queryBuilder');
+const { hasQuery, hasPropertyValue } = require('../utils/queryBuilder');
 
 const {
   fetchCategories,
@@ -104,17 +104,21 @@ exports.getReview = (request, response, next) => {
 };
 
 exports.getReviews = (request, response, next) => {
-  const categoryExists = () => hasCategory(request.query.category);
+  const categoryExists = () =>
+    hasPropertyValue('categories', 'slug', request.query.category);
+  let categoryRows = 0;
 
   return categoryExists()
     .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: 'non-existent category' });
-      }
+      categoryRows = rows.length;
+    })
+    .then(() => {
       return fetchReviews(request.query);
     })
     .then(({ rows }) => {
-      console.log(rows);
+      if (rows.length === 0 && categoryRows === 0) {
+        return Promise.reject({ status: 404, msg: 'non-existent category' });
+      }
       return response.status(200).send({ reviews: rows });
     })
     .catch((err) => {
@@ -123,11 +127,28 @@ exports.getReviews = (request, response, next) => {
 };
 
 exports.getReviewComments = (request, response, next) => {
-  return fetchReviewComments(request.params)
+  const IdExists = () =>
+    hasPropertyValue('reviews', 'review_id', request.params.review_id);
+  let idRows = 0;
+
+  return IdExists()
     .then(({ rows }) => {
+      console.log(rows);
+      categoryRows = rows.length;
+    })
+    .then(() => {
+      return fetchReviewComments(request.params);
+    })
+    .then(({ rows }) => {
+      if (rows.length === 0 && idRows == 0) {
+        return Promise.reject({ status: 404, msg: 'review_ID does not exist' });
+      }
       return response.status(200).send({ comments: rows });
     })
-    .catch((err) => console.log(err));
+
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getAPI = (request, response, next) => {

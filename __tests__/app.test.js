@@ -148,7 +148,7 @@ describe('GET', () => {
         });
     });
   });
-  describe.only('/api/reviews', () => {
+  describe('/api/reviews', () => {
     test('should return an array of review objects', () => {
       const enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
       return request(app)
@@ -245,7 +245,7 @@ describe('GET', () => {
           expect(msg).toEqual('non-existent category')
         );
     });
-    test.only('category valid but has no review, responds with an empty array', () => {
+    test('category valid but has no review, responds with an empty array', () => {
       return request(app)
         .get(`/api/reviews?category=children%27s+games`)
         .expect(200)
@@ -282,7 +282,26 @@ describe('GET', () => {
           });
         });
     });
+    test('Status 400, with an invalid ID', () => {
+      return request(app)
+        .get(`/api/reviews/INVALID/comments`)
+        .expect(400)
+        .then(({ body: { msg } }) => expect(msg).toEqual('Invalid input'));
+    });
+    test('Returns Status 404 with a non-existance ID, e.g 999', () => {
+      return request(app)
+        .get(`/api/reviews/999/comments`)
+        .expect(404)
+        .then(({ body: { msg } }) => expect(msg).toEqual('review_ID does not exist'));
+    });
+    test('Status 200 for valid ID but has no comments. Responds with empty array', () => {
+      return request(app)
+      .get(`/api/reviews/1/comments`)
+      .expect(404)
+      .then(({ body: { msg } }) => expect(msg).toEqual('review_ID does not exist'));
+    });
   });
+
   describe('/api', () => {
     test('returns with a JSON object', () => {
       return request(app)

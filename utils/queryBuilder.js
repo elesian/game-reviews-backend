@@ -93,6 +93,8 @@ exports.hasQuery = async (query) => {
   } else return false;
 };
 
-exports.hasCategory = async (category) => {
-  return db.query(`SELECT * from categories WHERE slug = $1;`, [category]);
+exports.hasPropertyValue = async (table, property, value) => {
+  console.log(table, property, value);
+  let queryString = `SELECT * from ${table} WHERE ${property} = $1;`;
+  return db.query(queryString, [value]);
 };
