@@ -49,7 +49,7 @@ exports.getDevStatus = (request, response, next) => {
     [
       'DELETE /api/comments/:comment_id',
       'deletes the comment for a given comment_id',
-      'N',
+      'Y',
     ],
 
     ['GET /api/users', 'responds with a list of users', 'N'],
