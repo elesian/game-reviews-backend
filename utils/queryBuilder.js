@@ -26,41 +26,14 @@ exports.queryBuilderReviews = async (query = {}) => {
     if (
       !whereKeys.every((element) => {
         return [
-          'owner',
-          'title',
-          'review_id',
-          'designer',
-          'review_img_url',
+          //can be extended to include more properties
           'category',
-          'created_at',
-          'votes',
-          'comment_count',
         ].includes(element);
       })
     ) {
       //reject if not a valid WHERE
       return Promise.reject({ status: 400, msg: 'Invalid WHERE query' });
     } else {
-      // const queryKeys = Object.keys(query);
-      // const propertyKeyValues = [];
-      // queryKeys.forEach((element) => {
-      //   if (
-      //     [
-      //       //can be extended for additional where clauses
-      //       'owner',
-      //       'title',
-      //       'review_id',
-      //       'designer',
-      //       'review_img_url',
-      //       'category',
-      //       'created_at',
-      //       'votes',
-      //       'comment_count',
-      //     ].includes(element)
-      //   )
-      //     propertyKeyValues.push(element);
-      // });
-
       //build multiple WHERE clauses
       for (let i = 0; i < whereKeys.length; i++) {
         if (i === 0) {

@@ -148,7 +148,7 @@ describe('GET', () => {
         });
     });
   });
-  describe('/api/reviews', () => {
+  describe.only('/api/reviews', () => {
     test('should return an array of review objects', () => {
       const enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
       return request(app)
@@ -245,11 +245,12 @@ describe('GET', () => {
           expect(msg).toEqual('non-existent category')
         );
     });
-    test('category valid but has no review, responds with an empty array', () => {
+    test.only('category valid but has no review, responds with an empty array', () => {
       return request(app)
         .get(`/api/reviews?category=children%27s+games`)
         .expect(200)
         .then(({ body: { reviews } }) => {
+          console.log(reviews);
           expect(reviews).toEqual([]);
         });
     });
