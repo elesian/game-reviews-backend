@@ -13,7 +13,7 @@ exports.queryBuilderReviews = async (query = {}) => {
       `;
 
   if (Object.keys(query).length > 0) {
-    const customKeys = Object.keys(query).filter((element) => {
+    const whereKeys = Object.keys(query).filter((element) => {
       //filter out sort_by and order keys of query
       if (!['sort_by', 'order'].includes(element)) {
         return element;
@@ -21,34 +21,52 @@ exports.queryBuilderReviews = async (query = {}) => {
     });
 
     //list of valid keys to be used for WHERE
-    console.log(customKeys);
+    console.log(whereKeys);
 
     if (
-      !customKeys.every((element) => {
-        return ['category'].includes(element);
+      !whereKeys.every((element) => {
+        return [
+          'owner',
+          'title',
+          'review_id',
+          'designer',
+          'review_img_url',
+          'category',
+          'created_at',
+          'votes',
+          'comment_count',
+        ].includes(element);
       })
     ) {
       //reject if not a valid WHERE
       return Promise.reject({ status: 400, msg: 'Invalid WHERE query' });
     } else {
-      const queryKeys = Object.keys(query);
-      const propertyKeyValues = [];
-      queryKeys.forEach((element) => {
-        if (
-          [
-            //can be extended for additional where clauses
-            'category',
-          ].includes(element)
-        )
-          propertyKeyValues.push(element);
-      });
+      // const queryKeys = Object.keys(query);
+      // const propertyKeyValues = [];
+      // queryKeys.forEach((element) => {
+      //   if (
+      //     [
+      //       //can be extended for additional where clauses
+      //       'owner',
+      //       'title',
+      //       'review_id',
+      //       'designer',
+      //       'review_img_url',
+      //       'category',
+      //       'created_at',
+      //       'votes',
+      //       'comment_count',
+      //     ].includes(element)
+      //   )
+      //     propertyKeyValues.push(element);
+      // });
 
       //build multiple WHERE clauses
-      for (let i = 0; i < propertyKeyValues.length; i++) {
-        if (i == 0) {
-          queryStr += ` WHERE ${propertyKeyValues[i]}=$${i + 1}`;
+      for (let i = 0; i < whereKeys.length; i++) {
+        if (i === 0) {
+          queryStr += ` WHERE ${whereKeys[i]}=$${i + 1}`;
         } else {
-          queryStr += ` AND ${propertyKeyValues[i]}=$${i + 1}`;
+          queryStr += ` AND ${whereKeys[i]}=$${i + 1}`;
         }
       }
     }
@@ -62,8 +80,9 @@ exports.queryBuilderReviews = async (query = {}) => {
           'owner',
           'title',
           'review_id',
-          'category',
+          'designer',
           'review_img_url',
+          'category',
           'created_at',
           'votes',
           'comment_count',
