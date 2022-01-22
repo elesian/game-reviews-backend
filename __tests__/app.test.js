@@ -4,7 +4,6 @@ const testData = require('../db/data/test-data/index.js');
 const { seed, listOfTables } = require('../db/seeds/seed.js');
 const request = require('supertest');
 const app = require('../app.js');
-const { notify } = require('../app.js');
 
 //test that returned queries are sorted by a given field
 require('jest-sorted');
@@ -507,11 +506,10 @@ describe('PATCH', () => {
         });
     });
   });
-
-  describe('/api/comments/:comment_id', () => {
+  describe('/api/comments/:comment_id/votes', () => {
     test('should increment the votes count for a given review_id', () => {
       return request(app)
-        .patch('/api/comments/1')
+        .patch('/api/comments/1/votes')
         .send({ inc_votes: -100 })
         .expect(200)
         .then(({ body: { comment } }) => {
@@ -520,7 +518,7 @@ describe('PATCH', () => {
     });
     test('should return 400 on an invalid ID', () => {
       return request(app)
-        .patch('/api/comments/test')
+        .patch('/api/comments/test/votes')
         .send({ inc_votes: -100 })
         .expect(400)
         .then(({ body: { msg } }) => {
@@ -529,7 +527,7 @@ describe('PATCH', () => {
     });
     test('should return 400 on an invalid inc_votes type', () => {
       return request(app)
-        .patch('/api/comments/test')
+        .patch('/api/comments/test/votes')
         .send({ inc_votes: 'INVALID' })
         .expect(400)
         .then(({ body: { msg } }) => {
@@ -538,7 +536,7 @@ describe('PATCH', () => {
     });
     test('should return 404 on a non existent ID', () => {
       return request(app)
-        .patch('/api/comments/999')
+        .patch('/api/comments/999/votes')
         .send({ inc_votes: -100 })
         .expect(404)
         .then(({ body: { msg } }) => {
@@ -547,11 +545,50 @@ describe('PATCH', () => {
     });
     test('should return status 200 with missing inc_votes key', () => {
       return request(app)
-        .patch('/api/comments/1')
+        .patch('/api/comments/1/votes')
         .send({})
         .expect(200)
         .then(({ body: { comment } }) => {
           expect(comment.votes).toEqual(16);
+        });
+    });
+  });
+  describe.only('/api/comments/:comment_id/body', () => {
+    test('should return 200 to an updated review body', () => {
+      return request(app)
+        .patch('/api/comments/1/body')
+        .send({ body: 'new comment body' })
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment.body).toEqual('new comment body');
+        });
+    });
+    test.only('should return 400 on an invalid ID', () => {
+      return request(app)
+        .patch('/api/comments/INVALID/body')
+        .send({ body: 'this is the new review body' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test.only('should return 404 on a non existent ID', () => {
+      return request(app)
+        .patch('/api/comments/999/body')
+        .send({ body: 'this is the new review body' })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - Not Found');
+        });
+    });
+    test.only('should return status 200 and default to `No comment available` when patched with empty body', () => {
+      return request(app)
+        .patch('/api/comments/1/body')
+        .send({})
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          console.log(comment);
+          expect(comment.body).toEqual('No comment available');
         });
     });
   });
@@ -798,7 +835,7 @@ describe('DELETE', () => {
         });
     });
   });
-  describe.only('Delete a review', () => {
+  describe('Delete a review', () => {
     test('should return a 204 status code with no body', () => {
       return request(app)
         .delete('/api/reviews/2')

@@ -22,3 +22,10 @@ exports.updateReviewBody = ({ review_id }, { body = 'No review available' }) => 
   RETURNING *;`;
   return db.query(patchQuery, [body, review_id]);
 };
+
+exports.updateCommentBody = ({ comment_id }, { body = 'No comment available' }) => {
+  const patchQuery = `
+  UPDATE comments SET body = $1 WHERE comments.comment_id = $2
+  RETURNING *;`;
+  return db.query(patchQuery, [body, comment_id]);
+};

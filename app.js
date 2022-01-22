@@ -26,11 +26,15 @@ const {
   patchReviewVote,
   patchCommentVote,
   patchReviewBody,
+  patchCommentBody,
 } = require('./controllers/patchControllers.js');
 
 const { postComment, postReview } = require(`./controllers/postControllers.js`);
 
-const { deleteComment, deleteReview } = require('./controllers/deleteControllers');
+const {
+  deleteComment,
+  deleteReview,
+} = require('./controllers/deleteControllers');
 
 app.get('/api', getAPI);
 app.get('/api/devStatus', getDevStatus);
@@ -42,9 +46,9 @@ app.get('/api/users', getUsers);
 app.get('/api/users/:username', getUser);
 
 app.patch('/api/reviews/:review_id', patchReviewVote);
-app.patch('/api/comments/:comment_id', patchCommentVote);
+app.patch('/api/comments/:comment_id/votes', patchCommentVote);
+app.patch('/api/comments/:comment_id/body', patchCommentBody);
 app.patch('/api/reviews/:review_id/body', patchReviewBody);
-
 
 app.post('/api/reviews/:review_id/comments', postComment);
 app.post('/api/reviews/review', postReview);

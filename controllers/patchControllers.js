@@ -4,6 +4,7 @@ const {
   updateReviewVote,
   updateCommentVote,
   updateReviewBody,
+  updateCommentBody,
 } = require('../models/patchModels.js');
 
 exports.patchReviewVote = (request, response, next) => {
@@ -41,3 +42,18 @@ exports.patchReviewBody = (request, response, next) => {
       next(err);
     });
 };
+
+exports.patchCommentBody = (request, response, next) => {
+  return updateCommentBody(request.params, request.body)
+  .then(({ rows }) => {
+    console.log(rows);
+    if (rows.length > 0) {
+      return response.status(200).send({ comment: rows[0] });
+    } else return Promise.reject({ status: 404, msg: '404 - Not Found' });
+  })
+  .catch((err) => {
+    next(err);
+  });
+
+
+}
