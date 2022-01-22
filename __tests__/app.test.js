@@ -241,7 +241,7 @@ describe('GET', () => {
       return request(app)
         .get(`/api/reviews${enquiry}`)
         .expect(404)
-        .then(({ body: { msg } }) => expect(msg).toEqual('404 - Not Found'));
+        .then(({ body: { msg } }) => expect(msg).toEqual('404 - No reviews found'));
     });
     test('category valid but has no review, responds with an empty array', () => {
       return request(app)
@@ -252,7 +252,7 @@ describe('GET', () => {
           expect(reviews).toEqual([]);
         });
     });
-    test.only('should accept pagination of results', () => {
+    test('should accept pagination of results', () => {
       return request(app)
         .get(`/api/reviews?category=social+deduction&limit=2&p=2`)
         .expect(200)
@@ -264,8 +264,8 @@ describe('GET', () => {
       return request(app)
         .get(`/api/reviews?category=social+deduction&limit=100&p=20`)
         .expect(404)
-        .then(({ body: { reviews } }) => {
-          expect(reviews).toEqual([]);
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - No reviews found');
         });
     });
   });
