@@ -4,6 +4,7 @@ const testData = require('../db/data/test-data/index.js');
 const { seed, listOfTables } = require('../db/seeds/seed.js');
 const request = require('supertest');
 const app = require('../app.js');
+const { notify } = require('../app.js');
 
 //test that returned queries are sorted by a given field
 require('jest-sorted');
@@ -262,12 +263,21 @@ describe('GET', () => {
           expect(reviews.length).toEqual(2);
         });
     });
-    test('should return 404 if row limit is exceeded', () => {
+    test('should return 200 if row limit is exceeded but category exists', () => {
       return request(app)
         .get(`/api/reviews?category=social+deduction&limit=100&p=20`)
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).toEqual('404 - No reviews found');
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toEqual([]);
+        });
+    });
+    test('should return the total number of results before limits', () => {
+      return request(app)
+        .get(`/api/reviews?category=social+deduction&limit=100&p=20`)
+        .expect(200)
+        .then(({ body: { reviews, count } }) => {
+          expect(reviews).toEqual([]);
+          expect(count).toEqual(11);
         });
     });
   });

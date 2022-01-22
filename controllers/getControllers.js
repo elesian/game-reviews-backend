@@ -117,16 +117,16 @@ exports.getReviews = (request, response, next) => {
     .then(() => {
       return fetchReviews(request.query);
     })
-    .then(({ rows }) => {
+    .then(({ rows, totalCount }) => {
       if (
         rows.length === 0 &&
         (request.query.hasOwnProperty('limit') ||
           request.query.hasOwnProperty('p')) &&
         categoryRows !== 0
       ) {
-        return response.status(200).send({ reviews: rows });
+        return response.status(200).send({ reviews: rows, count : totalCount });
       } else if (rows.length === 0 && categoryRows !== 0) {
-        return Promise.reject({ status: 404, msg: '404 - No reviews found' });
+        return response.status(200).send({ reviews: rows });
       } else if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: '404 - No reviews found' });
       } else return response.status(200).send({ reviews: rows });

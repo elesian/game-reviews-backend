@@ -1,6 +1,7 @@
 /** @format */
 
 const { query_timeout } = require('pg/lib/defaults');
+const { totalCount } = require('../db/connection.js');
 const db = require('../db/connection.js');
 const categories = require('../db/data/test-data/categories.js');
 const { queryBuilderReviews } = require('../utils/queryBuilder.js');
@@ -29,36 +30,46 @@ exports.fetchReviews = (query) => {
   });
 
   //sql injection protection
-  return queryBuilderReviews(query).then((values) => {
-    console.log(values);
-    const regex = /\$/gi;
-    const dynamicParameters = values.match(regex);
-    let numDynamicParameters = 0;
-    if (dynamicParameters !== null) {
-      numDynamicParameters = dynamicParameters.length;
-    }
+  return queryBuilderReviews(query)
+    .then((values) => {
+      console.log(values);
+      const regex = /\$/gi;
+      const dynamicParameters = values.match(regex);
+      let numDynamicParameters = 0;
+      if (dynamicParameters !== null) {
+        numDynamicParameters = dynamicParameters.length;
+      }
 
-    console.log(numDynamicParameters);
+      console.log(numDynamicParameters);
 
-    //default limit = 10, offset = 0
-    let limit = 100;
-    let offset = 0;
+      //default limit = 10, offset = 0
+      let limit = 100;
+      let offset = 0;
 
-    if (query.limit && query.p) {
-      (limit = query.limit), (offset = query.limit * (query.p - 1));
-    } else if (query.limit) {
-      limit = query.limit;
-    } else if (query.p) {
-      offset = 10 * (query.p - 1);
-    }
+      if (query.limit && query.p) {
+        (limit = query.limit), (offset = query.limit * (query.p - 1));
+      } else if (query.limit) {
+        limit = query.limit;
+      } else if (query.p) {
+        offset = 10 * (query.p - 1);
+      }
 
-    return db.query(
-      `${values} LIMIT $${numDynamicParameters + 1} OFFSET $${
-        numDynamicParameters + 2
-      };`,
-      [...columns, limit, offset]
-    );
-  });
+      const rowsLimited = db.query(
+        `${values} LIMIT $${numDynamicParameters + 1} OFFSET $${
+          numDynamicParameters + 2
+        };`,
+        [...columns, limit, offset]
+      );
+
+      const totalRows = db.query(`${values};`, [...columns]);
+
+      return Promise.all([rowsLimited, totalRows]);
+    })
+    .then((values) => {
+      const rowsLimited = values[0];
+      const totalRows = values[1];
+      return { rows: rowsLimited.rows, totalCount: totalRows.rowCount };
+    });
 };
 
 exports.fetchReviewComments = ({ review_id }, { limit = 10, p = 1 }) => {
