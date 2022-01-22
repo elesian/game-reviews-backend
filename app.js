@@ -30,7 +30,7 @@ const {
 
 const { postComment, postReview } = require(`./controllers/postControllers.js`);
 
-const { deleteComment } = require('./controllers/deleteControllers');
+const { deleteComment, deleteReview } = require('./controllers/deleteControllers');
 
 app.get('/api', getAPI);
 app.get('/api/devStatus', getDevStatus);
@@ -50,6 +50,7 @@ app.post('/api/reviews/:review_id/comments', postComment);
 app.post('/api/reviews/review', postReview);
 
 app.delete('/api/comments/:comment_id', deleteComment);
+app.delete('/api/reviews/:review_id', deleteReview);
 
 app.all('*', handle404Errors);
 app.use(handle404Errors);

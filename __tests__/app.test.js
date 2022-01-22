@@ -694,7 +694,7 @@ describe('POST', () => {
         });
     });
   });
-  describe.only('/api/reviews/review', () => {
+  describe('/api/reviews/review', () => {
     test('should return a new review', () => {
       return request(app)
         .post(`/api/reviews/review`)
@@ -792,6 +792,32 @@ describe('DELETE', () => {
     test('should return 400 for an invalid ID', () => {
       return request(app)
         .delete('/api/comments/INVALID')
+        .expect(400)
+        .then(({ statusCode }) => {
+          expect(statusCode).toEqual(400);
+        });
+    });
+  });
+  describe.only('Delete a review', () => {
+    test('should return a 204 status code with no body', () => {
+      return request(app)
+        .delete('/api/reviews/2')
+        .expect(204)
+        .then(({ statusCode }) => {
+          expect(statusCode).toEqual(204);
+        });
+    });
+    test('should return 404 for a non-existent ID', () => {
+      return request(app)
+        .delete('/api/reviews/999')
+        .expect(404)
+        .then(({ statusCode }) => {
+          expect(statusCode).toEqual(404);
+        });
+    });
+    test('should return 400 for an invalid ID', () => {
+      return request(app)
+        .delete('/api/reviews/INVALID')
         .expect(400)
         .then(({ statusCode }) => {
           expect(statusCode).toEqual(400);
