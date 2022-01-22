@@ -4,5 +4,5 @@ SELECT comments.comment_id, comments.votes, comments.created_at, comments.author
   LEFT JOIN reviews ON comments.review_id = reviews.review_id
   WHERE reviews.review_id = 3
   ORDER BY comments.created_at DESC
-  LIMIT 1 OFFSET 1;
+  OFFSET 1 LIMIT 1;
   

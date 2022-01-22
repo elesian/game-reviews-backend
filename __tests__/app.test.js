@@ -148,7 +148,7 @@ describe('GET', () => {
         });
     });
   });
-  describe('/api/reviews', () => {
+  describe.only('/api/reviews', () => {
     test('should return an array of review objects', () => {
       const enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
       return request(app)
@@ -241,9 +241,7 @@ describe('GET', () => {
       return request(app)
         .get(`/api/reviews${enquiry}`)
         .expect(404)
-        .then(({ body: { msg } }) =>
-          expect(msg).toEqual('non-existent category')
-        );
+        .then(({ body: { msg } }) => expect(msg).toEqual('404 - Not Found'));
     });
     test('category valid but has no review, responds with an empty array', () => {
       return request(app)
@@ -254,9 +252,25 @@ describe('GET', () => {
           expect(reviews).toEqual([]);
         });
     });
+    test.only('should accept pagination of results', () => {
+      return request(app)
+        .get(`/api/reviews?category=social+deduction&limit=2&p=2`)
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews.length).toEqual(2);
+        });
+    });
+    test('should return 404 if row limit is exceeded', () => {
+      return request(app)
+        .get(`/api/reviews?category=social+deduction&limit=100&p=20`)
+        .expect(404)
+        .then(({ body: { reviews } }) => {
+          expect(reviews).toEqual([]);
+        });
+    });
   });
 
-  describe.only('/api/reviews/:review_id/comments', () => {
+  describe('/api/reviews/:review_id/comments', () => {
     test('should return an object ', () => {
       return request(app)
         .get(`/api/reviews/2/comments`)

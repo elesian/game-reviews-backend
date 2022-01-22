@@ -15,7 +15,7 @@ exports.queryBuilderReviews = async (query = {}) => {
   if (Object.keys(query).length > 0) {
     const whereKeys = Object.keys(query).filter((element) => {
       //filter out sort_by and order keys of query
-      if (!['sort_by', 'order'].includes(element)) {
+      if (!['sort_by', 'order', 'limit', 'p'].includes(element)) {
         return element;
       }
     });
@@ -67,14 +67,13 @@ exports.queryBuilderReviews = async (query = {}) => {
       if (query.order) {
         if (!['asc', 'desc'].includes(query.order)) {
           return Promise.reject({ status: 400, msg: 'Invalid ORDER query' });
-        } else return (queryStr += ` ${query.order};`);
-      } else return (queryStr += ` DESC;`);
-    } else return (queryStr += ' ORDER BY reviews.created_at DESC;');
+        } else return (queryStr += ` ${query.order}`);
+      } else return (queryStr += ` DESC`);
+    } else return (queryStr += ' ORDER BY reviews.created_at DESC');
   }
 
-  queryStr += ' GROUP BY reviews.review_id ORDER BY reviews.created_at DESC';
-  console.log(queryStr);
-  return (queryStr += ';');
+  return (queryStr +=
+    ' GROUP BY reviews.review_id ORDER BY reviews.created_at DESC');
 };
 
 //checks if query param exists

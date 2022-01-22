@@ -116,10 +116,11 @@ exports.getReviews = (request, response, next) => {
       return fetchReviews(request.query);
     })
     .then(({ rows }) => {
-      if (rows.length === 0 && categoryRows === 0) {
-        return Promise.reject({ status: 404, msg: 'non-existent category' });
-      }
-      return response.status(200).send({ reviews: rows });
+      if (rows.length === 0 && categoryRows !== 0) {
+        return response.status(200).send({ reviews: rows });
+      } else if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: '404 - Not Found' });
+      } else response.status(200).send({ reviews: rows });
     })
     .catch((err) => {
       next(err);
