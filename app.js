@@ -28,7 +28,7 @@ const {
   patchReviewBody,
 } = require('./controllers/patchControllers.js');
 
-const { postComment } = require(`./controllers/postControllers.js`);
+const { postComment, postReview } = require(`./controllers/postControllers.js`);
 
 const { deleteComment } = require('./controllers/deleteControllers');
 
@@ -47,6 +47,7 @@ app.patch('/api/reviews/:review_id/body', patchReviewBody);
 
 
 app.post('/api/reviews/:review_id/comments', postComment);
+app.post('/api/reviews/review', postReview);
 
 app.delete('/api/comments/:comment_id', deleteComment);
 

@@ -694,6 +694,81 @@ describe('POST', () => {
         });
     });
   });
+  describe.only('/api/reviews/review', () => {
+    test('should return a new review', () => {
+      return request(app)
+        .post(`/api/reviews/review`)
+        .send({
+          owner: 'mallionaire',
+          title: 'new review',
+          review_body: 'this is a new review',
+          designer: 'default',
+          category: 'dexterity',
+        })
+        .expect(201)
+        .then(({ body: { review } }) => {
+          expect(review.length).toEqual(1);
+        });
+    });
+    test('should not accept an invalid user', () => {
+      return request(app)
+        .post(`/api/reviews/review`)
+        .send({
+          owner: 'INVALID',
+          title: 'new review',
+          review_body: 'this is a new review',
+          designer: 'default',
+          category: 'dexterity',
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('username invalid');
+        });
+    });
+    test('should not accept an invalid category', () => {
+      return request(app)
+        .post(`/api/reviews/review`)
+        .send({
+          owner: 'mallionaire',
+          title: 'new review',
+          review_body: 'this is a new review',
+          designer: 'default',
+          category: 'INVALID',
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('category invalid');
+        });
+    });
+    test('title cannot be missing', () => {
+      return request(app)
+        .post(`/api/reviews/review`)
+        .send({
+          owner: 'mallionaire',
+          review_body: 'this is a new review',
+          designer: 'default',
+          category: 'dexterity',
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('body cannot be missing', () => {
+      return request(app)
+        .post(`/api/reviews/review`)
+        .send({
+          owner: 'mallionaire',
+          title: 'new review',
+          designer: 'default',
+          category: 'dexterity',
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+  });
 });
 
 describe('DELETE', () => {
