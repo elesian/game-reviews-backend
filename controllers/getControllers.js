@@ -8,6 +8,8 @@ const {
   fetchReview,
   fetchReviews,
   fetchReviewComments,
+  fetchUsers,
+  fetchUser,
 } = require('../models/getModels.js');
 
 exports.getDevStatus = (request, response, next) => {
@@ -124,7 +126,7 @@ exports.getReviews = (request, response, next) => {
           request.query.hasOwnProperty('p')) &&
         categoryRows !== 0
       ) {
-        return response.status(200).send({ reviews: rows, count : totalCount });
+        return response.status(200).send({ reviews: rows, count: totalCount });
       } else if (rows.length === 0 && categoryRows !== 0) {
         return response.status(200).send({ reviews: rows });
       } else if (rows.length === 0) {
@@ -172,5 +174,35 @@ exports.getAPI = (request, response, next) => {
     .then((values) => {
       console.log(JSON.parse(values));
       return response.status(200).send({ api: JSON.parse(values) });
+    });
+};
+
+exports.getUsers = (request, response, next) => {
+  return fetchUsers()
+    .then(({ rows }) => {
+      return response.status(200).send({ users: rows });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getUser = (request, response, next) => {
+  return hasPropertyValue('users', 'username', request.params.username)
+    .then(({ rowCount }) => {
+      if (rowCount === 0) {
+        return Promise.reject({ status: 404, msg: 'username not found' });
+      } else return;
+    })
+    .then(() => {
+      console.log(request.params);
+      return fetchUser(request.params);
+    })
+    .then(({ rows }) => {
+      console.log(rows);
+      return response.status(200).send({ user: rows });
+    })
+    .catch((err) => {
+      next(err);
     });
 };

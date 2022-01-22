@@ -18,9 +18,14 @@ const {
   getReviews,
   getReviewComments,
   getAPI,
+  getUsers,
+  getUser,
 } = require('./controllers/getControllers.js');
 
-const { patchReviewVote } = require('./controllers/patchControllers.js');
+const {
+  patchReviewVote,
+  patchCommentVote,
+} = require('./controllers/patchControllers.js');
 
 const { postComment } = require(`./controllers/postControllers.js`);
 
@@ -32,8 +37,11 @@ app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getReview);
 app.get('/api/reviews', getReviews);
 app.get('/api/reviews/:review_id/comments', getReviewComments);
+app.get('/api/users', getUsers);
+app.get('/api/users/:username', getUser);
 
 app.patch('/api/reviews/:review_id', patchReviewVote);
+app.patch('/api/comments/:comment_id', patchCommentVote);
 
 app.post('/api/reviews/:review_id/comments', postComment);
 

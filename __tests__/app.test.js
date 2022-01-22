@@ -149,7 +149,8 @@ describe('GET', () => {
         });
     });
   });
-  describe.only('/api/reviews', () => {
+
+  describe('/api/reviews', () => {
     test('should return an array of review objects', () => {
       const enquiry = `?category=social+deduction&sort_by=votes&order=desc`;
       return request(app)
@@ -236,7 +237,6 @@ describe('GET', () => {
           expect(msg).toEqual('Invalid ORDER query');
         });
     });
-
     test('should return 404 on an invalid category ', () => {
       const enquiry = `?category=INVALID&sort_by=votes&order=desc`;
       return request(app)
@@ -278,6 +278,53 @@ describe('GET', () => {
         .then(({ body: { reviews, count } }) => {
           expect(reviews).toEqual([]);
           expect(count).toEqual(11);
+        });
+    });
+  });
+
+  describe('/api/users ', () => {
+    test('should return an object', () => {
+      return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({ body: { users } }) => {
+          expect(users.length).toEqual(4);
+        });
+    });
+    test('should return a user object with specific properties', () => {
+      return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({ body: { users } }) => {
+          users.every((element) => {
+            expect(element).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  });
+
+  describe('/api/users/:username', () => {
+    test('should return a user object of length one', () => {
+      return request(app)
+        .get('/api/users/mallionaire')
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user.length).toEqual(1);
+          expect(user[0].username).toEqual('mallionaire');
+        });
+    });
+    test('should return 404 for non existance ID', () => {
+      return request(app)
+        .get('/api/users/1')
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('username not found');
         });
     });
   });
@@ -407,6 +454,53 @@ describe('PATCH', () => {
         .expect(200)
         .then(({ body: { review } }) => {
           expect(review.votes).toEqual(1);
+        });
+    });
+  });
+  describe('/api/comments/:comment_id', () => {
+    test('should increment the votes count for a given review_id', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: -100 })
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment.votes).toEqual(-84);
+        });
+    });
+    test('should return 400 on an invalid ID', () => {
+      return request(app)
+        .patch('/api/comments/test')
+        .send({ inc_votes: -100 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 400 on an invalid inc_votes type', () => {
+      return request(app)
+        .patch('/api/comments/test')
+        .send({ inc_votes: 'INVALID' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 404 on a non existent ID', () => {
+      return request(app)
+        .patch('/api/comments/999')
+        .send({ inc_votes: -100 })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - Not Found');
+        });
+    });
+    test('should return status 200 with missing inc_votes key', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({})
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment.votes).toEqual(16);
         });
     });
   });

@@ -83,3 +83,11 @@ exports.fetchReviewComments = ({ review_id }, { limit = 10, p = 1 }) => {
 
   return db.query(query, [review_id, limit, currentRow]);
 };
+
+exports.fetchUsers = () => {
+  return db.query('SELECT * from users;');
+};
+
+exports.fetchUser = ({ username }) => {
+  return db.query('SELECT * FROM users where username = $1;', [username]);
+};
