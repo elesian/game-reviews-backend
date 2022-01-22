@@ -241,7 +241,9 @@ describe('GET', () => {
       return request(app)
         .get(`/api/reviews${enquiry}`)
         .expect(404)
-        .then(({ body: { msg } }) => expect(msg).toEqual('404 - No reviews found'));
+        .then(({ body: { msg } }) =>
+          expect(msg).toEqual('404 - Invalid Category')
+        );
     });
     test('category valid but has no review, responds with an empty array', () => {
       return request(app)
