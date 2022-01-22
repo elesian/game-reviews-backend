@@ -78,6 +78,7 @@ describe('GET', () => {
         });
     });
   });
+
   describe('/api/categories', () => {
     test('should return an object containing a list of categories', () => {
       return request(app)
@@ -98,6 +99,7 @@ describe('GET', () => {
         });
     });
   });
+
   describe('/api/reviews/:review_id', () => {
     test('should return a review object with an aggregated comment total of 0 for a review with no comments', () => {
       return request(app)
@@ -457,6 +459,55 @@ describe('PATCH', () => {
         });
     });
   });
+  describe('/api/reviews/:review_id/body', () => {
+    test('should return 200 and the updated review object', () => {
+      return request(app)
+        .patch('/api/reviews/1/body')
+        .send({ body: 'this is the new review body' })
+        .expect(200)
+        .then(({ body: { review } }) => {
+          expect(review.review_body).toEqual('this is the new review body');
+        });
+    });
+    test('should return 400 on an invalid ID', () => {
+      return request(app)
+        .patch('/api/reviews/string/body')
+        .send({ body: 'this is the new review body' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 400 on an invalid inc_votes type', () => {
+      return request(app)
+        .patch('/api/reviews/test/body')
+        .send({ body: 'INVALID' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('Invalid input');
+        });
+    });
+    test('should return 404 on a non existent ID', () => {
+      return request(app)
+        .patch('/api/reviews/999/body')
+        .send({ body: 'this is the new review body' })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - Not Found');
+        });
+    });
+    test('should return status 200 and default to `no review available` when patched with empty body', () => {
+      return request(app)
+        .patch('/api/reviews/1/body')
+        .send({})
+        .expect(200)
+        .then(({ body: { review } }) => {
+          console.log(review);
+          expect(review.review_body).toEqual('No review available');
+        });
+    });
+  });
+
   describe('/api/comments/:comment_id', () => {
     test('should increment the votes count for a given review_id', () => {
       return request(app)

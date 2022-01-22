@@ -25,6 +25,7 @@ const {
 const {
   patchReviewVote,
   patchCommentVote,
+  patchReviewBody,
 } = require('./controllers/patchControllers.js');
 
 const { postComment } = require(`./controllers/postControllers.js`);
@@ -42,6 +43,8 @@ app.get('/api/users/:username', getUser);
 
 app.patch('/api/reviews/:review_id', patchReviewVote);
 app.patch('/api/comments/:comment_id', patchCommentVote);
+app.patch('/api/reviews/:review_id/body', patchReviewBody);
+
 
 app.post('/api/reviews/:review_id/comments', postComment);
 
