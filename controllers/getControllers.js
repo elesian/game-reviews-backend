@@ -54,14 +54,14 @@ exports.getDevStatus = (request, response, next) => {
       'Y',
     ],
 
-    ['GET /api/users', 'responds with a list of users', 'N'],
+    ['GET /api/users', 'responds with a list of users', 'Y'],
 
-    ['GET /api/users/:username', 'responds with a given user object', 'N'],
+    ['GET /api/users/:username', 'responds with a given user object', 'Y'],
 
     [
       'PATCH /api/comments/:comment_id',
       'add/substract votes for a given comment',
-      'N',
+      'Y',
     ],
   ];
   const endPoints = endPointData.map((element) => {
