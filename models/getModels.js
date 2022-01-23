@@ -1,9 +1,7 @@
 /** @format */
 
-const { query_timeout } = require('pg/lib/defaults');
-const { totalCount } = require('../db/connection.js');
 const db = require('../db/connection.js');
-const categories = require('../db/data/test-data/categories.js');
+
 const { queryBuilderReviews } = require('../utils/queryBuilder.js');
 
 exports.fetchCategories = () => {
@@ -90,4 +88,15 @@ exports.fetchUsers = () => {
 
 exports.fetchUser = ({ username }) => {
   return db.query('SELECT * FROM users where username = $1;', [username]);
+};
+
+exports.returnReview = ({ title }) => {
+  const query = `SELECT reviews.title, reviews.review_id, review_body, 
+  designer, review_img_url, category, reviews.created_at, reviews.votes, 
+  count(comment_id)::int as comment_count FROM reviews 
+  LEFT JOIN comments ON reviews.review_id = comments.review_id
+    WHERE reviews.title = $1
+    GROUP BY reviews.review_id;`;
+
+  return db.query(query, [title]);
 };

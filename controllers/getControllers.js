@@ -10,6 +10,7 @@ const {
   fetchReviewComments,
   fetchUsers,
   fetchUser,
+  returnReview,
 } = require('../models/getModels.js');
 
 exports.getDevStatus = (request, response, next) => {
@@ -201,6 +202,18 @@ exports.getUser = (request, response, next) => {
     .then(({ rows }) => {
       console.log(rows);
       return response.status(200).send({ user: rows });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getReviewByTitle = (request, response, next) => {
+  return returnReview(request.params)
+    .then(({ rows }) => {
+      if (rows.length !== 0) {
+        return response.status(200).send({ review: rows });
+      } else return Promise.reject({ status: 404, msg: '404 - Not Found' });
     })
     .catch((err) => {
       next(err);

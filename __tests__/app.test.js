@@ -408,6 +408,58 @@ describe('GET', () => {
         });
     });
   });
+
+  describe('/api/review/:title', () => {
+    test('should return a review body for a valid review title', () => {
+      return request(app)
+        .get('/api/review/Agricola')
+        .expect(200)
+        .then(({ body: { review } }) => {
+          expect(review[0].title).toEqual('Agricola');
+        });
+    });
+    test('should return a review object with an aggregated comment total of 0 for a review with no comments', () => {
+      return request(app)
+        .get('/api/review/Agricola')
+        .expect(200)
+        .then(({ body: { review } }) => {
+          console.log(review);
+          expect(typeof review).toEqual('object');
+          expect(review.length).toEqual(1);
+          review.every((element) =>
+            expect(element).toEqual({
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              review_body: expect.any(String),
+              designer: expect.any(String),
+              review_img_url: expect.any(String),
+              category: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: 0,
+            })
+          );
+        });
+    });
+    test('should return a review object with an aggregated comment total of > 0 for a review with comments', () => {
+      return request(app)
+        .get('/api/review/Ultimate Werewolf')
+        .expect(200)
+        .then(({ body: { review } }) => {
+          console.log(review);
+          expect(review.length).toEqual(1);
+          expect(review[0].comment_count).toEqual(3);
+        });
+    });
+    test('Should return status 404 for an invalid title', () => {
+      return request(app)
+        .get('/api/review/INVALID')
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual('404 - Not Found');
+        });
+    });
+  });
 });
 
 describe('PATCH', () => {
@@ -553,7 +605,7 @@ describe('PATCH', () => {
         });
     });
   });
-  describe.only('/api/comments/:comment_id/body', () => {
+  describe('/api/comments/:comment_id/body', () => {
     test('should return 200 to an updated review body', () => {
       return request(app)
         .patch('/api/comments/1/body')
@@ -563,7 +615,7 @@ describe('PATCH', () => {
           expect(comment.body).toEqual('new comment body');
         });
     });
-    test.only('should return 400 on an invalid ID', () => {
+    test('should return 400 on an invalid ID', () => {
       return request(app)
         .patch('/api/comments/INVALID/body')
         .send({ body: 'this is the new review body' })
@@ -572,7 +624,7 @@ describe('PATCH', () => {
           expect(msg).toEqual('Invalid input');
         });
     });
-    test.only('should return 404 on a non existent ID', () => {
+    test('should return 404 on a non existent ID', () => {
       return request(app)
         .patch('/api/comments/999/body')
         .send({ body: 'this is the new review body' })
@@ -581,7 +633,7 @@ describe('PATCH', () => {
           expect(msg).toEqual('404 - Not Found');
         });
     });
-    test.only('should return status 200 and default to `No comment available` when patched with empty body', () => {
+    test('should return status 200 and default to `No comment available` when patched with empty body', () => {
       return request(app)
         .patch('/api/comments/1/body')
         .send({})

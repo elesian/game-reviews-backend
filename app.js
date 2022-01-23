@@ -20,6 +20,7 @@ const {
   getAPI,
   getUsers,
   getUser,
+  getReviewByTitle,
 } = require('./controllers/getControllers.js');
 
 const {
@@ -44,6 +45,7 @@ app.get('/api/reviews', getReviews);
 app.get('/api/reviews/:review_id/comments', getReviewComments);
 app.get('/api/users', getUsers);
 app.get('/api/users/:username', getUser);
+app.get('/api/review/:title', getReviewByTitle);
 
 app.patch('/api/reviews/:review_id', patchReviewVote);
 app.patch('/api/comments/:comment_id/votes', patchCommentVote);
