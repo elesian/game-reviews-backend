@@ -37,6 +37,12 @@ const {
   deleteReview,
 } = require('./controllers/deleteControllers');
 
+app.get('/', (request, response) => {
+  return response
+    .status(200)
+    .send({ msg: 'Please add .../api for a description of end-points' });
+});
+
 app.get('/api', getAPI);
 app.get('/api/devStatus', getDevStatus);
 app.get('/api/categories', getCategories);
