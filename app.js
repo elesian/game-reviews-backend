@@ -42,7 +42,7 @@ app.get('/', (request, response) => {
     .status(200)
     .send({
       Instructions:
-        'Please add /api to the home URL for a description of implemented API end-points. A suitable JSON viewer, such as \"JSON Viewer\", is recommended for accessible JSON string viewing',
+        'Please add /api to the home URL for a description of implemented API end-points. A suitable JSON viewer, such as -JSON Viewer-, is recommended for accessible JSON string viewing',
     });
 });
 
