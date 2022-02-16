@@ -56,13 +56,13 @@ app.get('/api/users', getUsers);
 app.get('/api/users/:username', getUser);
 app.get('/api/review/:title', getReviewByTitle);
 
-app.patch('/api/reviews/:review_id', patchReviewVote);
-app.patch('/api/comments/:comment_id/votes', patchCommentVote);
-app.patch('/api/comments/:comment_id/body', patchCommentBody);
+app.patch('/api/reviews/:review_id/vote', patchReviewVote);
 app.patch('/api/reviews/:review_id/body', patchReviewBody);
+app.patch('/api/comments/:comment_id/vote', patchCommentVote);
+app.patch('/api/comments/:comment_id/body', patchCommentBody);
 
-app.post('/api/reviews/:review_id/comments', postComment);
-app.post('/api/reviews/review', postReview);
+app.post('/api/reviews/:review_id/comment', postComment);
+app.post('/api/reviews/:review_id/body', postReview);
 
 app.delete('/api/comments/:comment_id', deleteComment);
 app.delete('/api/reviews/:review_id', deleteReview);

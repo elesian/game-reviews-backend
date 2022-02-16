@@ -1,6 +1,5 @@
 /** @format */
 
-const { request } = require('express');
 const { addComment, addReview } = require(`../models/postModels.js`);
 const { hasPropertyValue } = require('../utils/queryBuilder.js');
 

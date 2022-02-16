@@ -1,11 +1,13 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all available API endpoints"
+    "description": "serves up a json representation of all available API endpoints",
+    "status": 200
   },
 
   "GET /api/categories": {
     "description": "serves an array of all available categories; example shows a singular category",
     "queries": [],
+    "status": 200,
     "exampleResponse": {
       "categories": [
         {
@@ -19,6 +21,7 @@
   "GET /api/reviews/:review_id": {
     "description": "returns a single review object specified by the parametric review_id",
     "queries": [],
+    "status": 200,
     "exampleResponseKeys": {
       "review": [
         {
@@ -39,6 +42,7 @@
   "GET /api/reviews": {
     "description": "serves an array of all available reviews; example shows a representative review",
     "queries": [],
+    "status": 200,
     "exampleResponse": {
       "reviews": [
         {
@@ -57,8 +61,9 @@
   },
 
   "GET /api/reviews/:review_id/comments": {
-    "description": "serves an array of comments for the given review_id",
+    "description": "serves an array of comments for the given parametric end-point: review_id",
     "queries": [],
+    "status": 200,
     "exampleResponse": {
       "comments": [
         {
@@ -75,6 +80,7 @@
   "GET /api/review/:title": {
     "description": "serves the corresponding review object, given review title",
     "queries": [],
+    "status": 200,
     "exampleResponse": {
       "review": [
         {
@@ -95,6 +101,7 @@
   "GET /api/users": {
     "description": "serves an array of users; example is representative of a singular user",
     "queries": [],
+    "status": 200,
     "exampleResponse": {
       "users": [
         {
@@ -107,8 +114,9 @@
   },
 
   "GET /api/users/:username": {
-    "description": "returns a singular user specified by the parametric end-point",
+    "description": "returns a singular user specified by the parametric end-point: username",
     "queries": [],
+    "status": 200,
     "exampleResponse": {
       "users": [
         {
@@ -120,27 +128,129 @@
     }
   },
 
-
   "DELETE /api/comments/:comment_id": {
-    "description": "deletes the given comment by comment_id",
+    "description": "deletes the given comment specified by parametric end-point: comment_id",
     "queries": [],
-    "exampleResponse": "status 204 returned"
+    "status": 204
+  },
+
+  "DELETE /api/reviews/:review_id": {
+    "description": "deletes the given review specified by parametric end-point: review_id",
+    "queries": [],
+    "status": 204
+  },
+
+  "PATCH /api/reviews/:review_id/vote": {
+    "description": "modifies the given review vote specified by the parametric end-point: review_id",
+    "queries": [],
+    "status": 200,
+    "exampleResponse": {
+      "review": [
+        {
+          "owner": "cooljmessy",
+          "title": "Velit tempor ullamco amet ipsum dolor voluptate.",
+          "review_id": 14,
+          "designer": "Don Keigh",
+          "review_img_url": "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+          "category": "hidden-roles",
+          "created_at": "2021-02-05T00:00:00.000Z",
+          "votes": 3,
+          "comment_count": 0
+        }
+      ]
+    }
+  },
+
+  "PATCH /api/reviews/:review_id/body": {
+    "description": "modifies the given review body specified by the parametric end-point: review_id",
+    "queries": [],
+    "status": 200,
+    "exampleResponse": {
+      "review": [
+        {
+          "owner": "cooljmessy",
+          "title": "Velit tempor ullamco amet ipsum dolor voluptate.",
+          "review_id": 14,
+          "designer": "Don Keigh",
+          "review_img_url": "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+          "category": "hidden-roles",
+          "created_at": "2021-02-05T00:00:00.000Z",
+          "votes": 3,
+          "comment_count": 0
+        }
+      ]
+    }
+  },
+
+  "PATCH /api/comments/:comment_id/vote": {
+    "description": "modifies the given comment vote specified by the parametric end-point: comment_id",
+    "queries": [],
+    "status": 200,
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "votes": 16,
+          "created_at": "2017-11-22T00:00:00.000Z",
+          "author": "happyamy2016",
+          "body": "I loved this game too!"
+        }
+      ]
+    }
+  },
+
+  "PATCH /api/comments/:comment_id/body": {
+    "description": "modifies the given comment body specified by the parametric end-point: comment_id",
+    "queries": [],
+    "status": 200,
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "votes": 16,
+          "created_at": "2017-11-22T00:00:00.000Z",
+          "author": "happyamy2016",
+          "body": "I loved this game too!"
+        }
+      ]
+    }
+  },
+
+  "POST /api/reviews/:review_id/body": {
+    "description": "add a new body to the review specified by the parametric end-point: review_id",
+    "queries": [],
+    "status": 201,
+    "exampleResponse": {
+      "review": [
+        {
+          "owner": "cooljmessy",
+          "title": "Velit tempor ullamco amet ipsum dolor voluptate.",
+          "review_id": 14,
+          "designer": "Don Keigh",
+          "review_img_url": "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+          "category": "hidden-roles",
+          "created_at": "2021-02-05T00:00:00.000Z",
+          "votes": 3,
+          "comment_count": 0
+        }
+      ]
+    }
+  },
+
+  "POST /api/reviews/:review_id/comment": {
+    "description": "adds a new comment body to the review specified by the parametric end-point: review_id",
+    "queries": [],
+    "status": 201,
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "votes": 16,
+          "created_at": "2017-11-22T00:00:00.000Z",
+          "author": "happyamy2016",
+          "body": "I loved this game too!"
+        }
+      ]
+    }
   }
 }
-
-
-
-
-
-
-
-// app.patch('/api/reviews/:review_id', patchReviewVote);
-// app.patch('/api/comments/:comment_id/votes', patchCommentVote);
-// app.patch('/api/comments/:comment_id/body', patchCommentBody);
-// app.patch('/api/reviews/:review_id/body', patchReviewBody);
-
-// app.post('/api/reviews/:review_id/comments', postComment);
-// app.post('/api/reviews/review', postReview);
-
-// app.delete('/api/comments/:comment_id', deleteComment);
-// app.delete('/api/reviews/:review_id', deleteReview);
