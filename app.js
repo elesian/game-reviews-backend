@@ -40,7 +40,10 @@ const {
 app.get('/', (request, response) => {
   return response
     .status(200)
-    .send({ msg: 'Please add .../api for a description of end-points' });
+    .send({
+      Instructions:
+        'Please add /api to the URL for a description of available API end-points',
+    });
 });
 
 app.get('/api', getAPI);
