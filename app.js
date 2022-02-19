@@ -12,7 +12,6 @@ const {
 } = require('./errors/errors.js');
 
 const {
-  getDevStatus,
   getCategories,
   getReview,
   getReviews,
@@ -45,7 +44,6 @@ app.get('/', (request, response) => {
 });
 
 app.get('/api', getAPI);
-app.get('/api/devStatus', getDevStatus);
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getReview);
 app.get('/api/reviews', getReviews);
