@@ -47,37 +47,6 @@ describe('*', () => {
 });
 
 describe('GET', () => {
-  describe('/api/developmentalStatus returns with a list of endpoints', () => {
-    test('should return an array of endpoints with fields', () => {
-      return request(app)
-        .get('/api/devStatus')
-        .expect(200)
-        .then(({ body }) => {
-          console.log(body);
-          expect(typeof body).toEqual('object');
-          expect(body[0].completed).toEqual('Y');
-          expect(body.length).toEqual(11);
-          body.every((element) =>
-            expect(element).toEqual(
-              expect.objectContaining({
-                endpoint: expect.any(String),
-                description: expect.any(String),
-                completed: expect.any(String),
-              })
-            )
-          );
-        });
-    });
-    test('should ignore queries', () => {
-      return request(app)
-        .get('/api/devStatus?test=2')
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).toEqual('Queries not accepted');
-        });
-    });
-  });
-
   describe('/api/categories', () => {
     test('should return an object containing a list of categories', () => {
       return request(app)
@@ -466,7 +435,7 @@ describe('PATCH', () => {
   describe('/api/reviews/:review_id', () => {
     test('should increment the votes count for a given review_id', () => {
       return request(app)
-        .patch('/api/reviews/1')
+        .patch('/api/reviews/1/vote')
         .send({ inc_votes: -100 })
         .expect(200)
         .then(({ body: { review } }) => {
@@ -475,7 +444,7 @@ describe('PATCH', () => {
     });
     test('should return 400 on an invalid ID', () => {
       return request(app)
-        .patch('/api/reviews/test')
+        .patch('/api/reviews/test/vote')
         .send({ inc_votes: -100 })
         .expect(400)
         .then(({ body: { msg } }) => {
@@ -484,7 +453,7 @@ describe('PATCH', () => {
     });
     test('should return 400 on an invalid inc_votes type', () => {
       return request(app)
-        .patch('/api/reviews/test')
+        .patch('/api/reviews/test/vote')
         .send({ inc_votes: 'INVALID' })
         .expect(400)
         .then(({ body: { msg } }) => {
@@ -493,7 +462,7 @@ describe('PATCH', () => {
     });
     test('should return 404 on a non existent ID', () => {
       return request(app)
-        .patch('/api/reviews/999')
+        .patch('/api/reviews/999/vote')
         .send({ inc_votes: -100 })
         .expect(404)
         .then(({ body: { msg } }) => {
@@ -502,7 +471,7 @@ describe('PATCH', () => {
     });
     test('should return status 200 with missing inc_votes key', () => {
       return request(app)
-        .patch('/api/reviews/1')
+        .patch('/api/reviews/1/vote')
         .send({})
         .expect(200)
         .then(({ body: { review } }) => {
@@ -561,7 +530,7 @@ describe('PATCH', () => {
   describe('/api/comments/:comment_id/votes', () => {
     test('should increment the votes count for a given review_id', () => {
       return request(app)
-        .patch('/api/comments/1/votes')
+        .patch('/api/comments/1/vote')
         .send({ inc_votes: -100 })
         .expect(200)
         .then(({ body: { comment } }) => {
@@ -570,7 +539,7 @@ describe('PATCH', () => {
     });
     test('should return 400 on an invalid ID', () => {
       return request(app)
-        .patch('/api/comments/test/votes')
+        .patch('/api/comments/test/vote')
         .send({ inc_votes: -100 })
         .expect(400)
         .then(({ body: { msg } }) => {
@@ -579,7 +548,7 @@ describe('PATCH', () => {
     });
     test('should return 400 on an invalid inc_votes type', () => {
       return request(app)
-        .patch('/api/comments/test/votes')
+        .patch('/api/comments/test/vote')
         .send({ inc_votes: 'INVALID' })
         .expect(400)
         .then(({ body: { msg } }) => {
@@ -588,7 +557,7 @@ describe('PATCH', () => {
     });
     test('should return 404 on a non existent ID', () => {
       return request(app)
-        .patch('/api/comments/999/votes')
+        .patch('/api/comments/999/vote')
         .send({ inc_votes: -100 })
         .expect(404)
         .then(({ body: { msg } }) => {
@@ -597,7 +566,7 @@ describe('PATCH', () => {
     });
     test('should return status 200 with missing inc_votes key', () => {
       return request(app)
-        .patch('/api/comments/1/votes')
+        .patch('/api/comments/1/vote')
         .send({})
         .expect(200)
         .then(({ body: { comment } }) => {
@@ -650,7 +619,7 @@ describe('POST', () => {
   describe('/api/reviews/:review_id/comments', () => {
     test('should return a posted comment ', () => {
       return request(app)
-        .post('/api/reviews/1/comments')
+        .post('/api/reviews/1/comment')
         .send({
           username: 'mallionaire',
           body: `I'd buy that for a dollar !!!`,
@@ -666,7 +635,7 @@ describe('POST', () => {
     });
     test('should be able to do multiple updates', () => {
       return request(app)
-        .post('/api/reviews/2/comments')
+        .post('/api/reviews/2/comment')
         .send({
           username: 'mallionaire',
           body: `I'd buy that for a dollar !!!`,
@@ -674,7 +643,7 @@ describe('POST', () => {
         .expect(201)
         .then(() => {
           return request(app)
-            .post('/api/reviews/2/comments')
+            .post('/api/reviews/2/comment')
             .send({
               username: 'mallionaire',
               body: `I'd buy that for two dollars !!!`,
@@ -691,7 +660,7 @@ describe('POST', () => {
     });
     test('should return a body that matches the sent body', () => {
       return request(app)
-        .post('/api/reviews/2/comments')
+        .post('/api/reviews/2/comment')
         .send({
           username: 'mallionaire',
           body: `I'd buy that for a dollar !!!`,
@@ -703,7 +672,7 @@ describe('POST', () => {
     });
     test('should reject an invalid ID', () => {
       return request(app)
-        .post('/api/reviews/INVALID/comments')
+        .post('/api/reviews/INVALID/comment')
         .send({
           username: 'mallionaire',
           body: `I'd buy that for a dollar !!!`,
@@ -715,7 +684,7 @@ describe('POST', () => {
     });
     test('should return 400 for a non-existant review ID', () => {
       return request(app)
-        .post('/api/reviews/999/comments')
+        .post('/api/reviews/999/comment')
         .send({
           username: 'mallionaire',
           body: `I'd buy that for a dollar !!!`,
@@ -727,7 +696,7 @@ describe('POST', () => {
     });
     test('should return 404 for missing required fields - i.e no user-name or body properties', () => {
       return request(app)
-        .post('/api/reviews/1/comments')
+        .post('/api/reviews/1/comment')
         .send({
           body: `I'd buy that for a dollar !!!`,
         })
@@ -738,7 +707,7 @@ describe('POST', () => {
     });
     test('should return 400 for missing required fields - i.e no user-name or body properties', () => {
       return request(app)
-        .post('/api/reviews/1/comments')
+        .post('/api/reviews/1/comment')
         .send({
           username: 'mallionaire',
         })
@@ -749,7 +718,7 @@ describe('POST', () => {
     });
     test('should return 404 for a username that does not exist', () => {
       return request(app)
-        .post('/api/reviews/1/comments')
+        .post('/api/reviews/1/comment')
         .send({
           username: 'INVALID',
           body: `I'd buy that for a dollar !!!`,
@@ -761,7 +730,7 @@ describe('POST', () => {
     });
     test('ignores unnecessary properties - STATUS 201 returned', () => {
       return request(app)
-        .post('/api/reviews/1/comments')
+        .post('/api/reviews/1/comment')
         .send({
           username: 'mallionaire',
           body: `I'd buy that for a dollar !!!`,

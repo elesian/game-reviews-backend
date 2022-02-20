@@ -90,6 +90,7 @@ describe('INSERT data into comments table', () => {
   });
 });
 
+//This unit test no longer fully passes due to changes in the implementation of the query builder.
 describe('QUERY BUILDER', () => {
   test('should return a string', () => {
     return queryBuilder.queryBuilderReviews().then((string) => {
@@ -100,11 +101,10 @@ describe('QUERY BUILDER', () => {
   test('should return a valid sql query', () => {
     return queryBuilder.queryBuilderReviews().then((string) => {
       expect(string)
-        .toEqual(`SELECT owner, title, reviews.review_id, review_body, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comment_id)::int as comment_count FROM reviews 
-      JOIN users ON reviews.owner=users.username 
-      LEFT JOIN comments ON reviews.review_id=comments.review_id 
-      GROUP BY reviews.review_id
-       ORDER BY reviews.created_at ASC;`);
+        .toEqual(`SELECT owner, title, reviews.review_id, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comment_id)::int as comment_count FROM reviews 
+        JOIN users ON reviews.owner=users.username 
+        LEFT JOIN comments ON reviews.review_id=comments.review_id 
+        GROUP BY reviews.review_id ORDER BY reviews.created_at DESC`);
     });
   });
   test('should reject invalid WHERE clause', () => {
@@ -153,14 +153,15 @@ describe('QUERY BUILDER', () => {
         category: 'test',
       })
       .then((string) => {
+        console.log(string)
         let lowerCase = string.toLowerCase();
-        expect(lowerCase.includes('order by reviews.votes asc')).toEqual(true);
+        expect(lowerCase.includes('order by reviews.title asc')).toEqual(true);
         expect(lowerCase.includes('where category=$1')).toEqual(true);
       });
   });
 });
 
-describe.only('Category Validator', () => {
+describe('Category Validator', () => {
   test('should return an object', () => {
     return queryBuilder
       .hasPropertyValue('categories', 'slug', 'dexterity')

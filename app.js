@@ -58,7 +58,7 @@ app.patch('/api/comments/:comment_id/vote', patchCommentVote);
 app.patch('/api/comments/:comment_id/body', patchCommentBody);
 
 app.post('/api/reviews/:review_id/comment', postComment);
-app.post('/api/reviews/:review_id/body', postReview);
+app.post('/api/reviews/review', postReview);
 
 app.delete('/api/comments/:comment_id', deleteComment);
 app.delete('/api/reviews/:review_id', deleteReview);
